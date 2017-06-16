@@ -7,7 +7,7 @@
 		<connection-url>jdbc:h2:mem:blackbox;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE;</connection-url>
 		<!-- Resource filtering might not work, when using wildfly-swarm:run -->
 		<!--<connection-url>jdbc:h2:file:${h2.path}</connection-url>-->
-		<!--<connection-url>jdbc:h2:file:/home/frohme/example06</connection-url>-->
+		<!--<connection-url>jdbc:h2:file:/home/frohme/blackbox</connection-url>-->
 		<driver>h2</driver>
 		<security>
 			<user-name>sa</user-name>
