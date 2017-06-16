@@ -4,6 +4,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Order;
 import javax.persistence.criteria.Root;
 import javax.transaction.Transactional;
 import javax.ws.rs.Consumes;
@@ -36,6 +37,21 @@ public class MessagesCRUD {
 
 		return this.entityManager.createQuery(query).getResultList();
 	}
+	
+	@GET
+	@Path("newest")
+	@Produces(MediaType.APPLICATION_JSON)
+	public List<DBMessage> readAllAsJSONNewest() {
+		final CriteriaBuilder builder = this.entityManager.getCriteriaBuilder();
+		final CriteriaQuery<DBMessage> query = builder.createQuery(DBMessage.class);
+
+		final Root<DBMessage> from = query.from(DBMessage.class);
+
+		query.select(from);
+
+		return this.entityManager.createQuery(query).getResultList();
+	}
+	
 
 	@Path("/{id}")
 	@GET
