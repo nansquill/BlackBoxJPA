@@ -5,13 +5,15 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.util.Date;
+import com.webtec2.DBCategory;
+import com.webtec2.DBUser;
 
 @Entity
 @XmlRootElement
 public class DBMessage extends DBIdentified {
 
-	private DBCategory category;
-	private DBUser user;
+	private String category;
+	private String user;
 	private String headline;
 	private String content;
 	private Date publishedOn;
@@ -26,11 +28,11 @@ public class DBMessage extends DBIdentified {
 		this.publishedOn = publishedOn;
 	}
 	
-	public DBUser getUser()	{
+	public String getUser()	{
 		return user;
 	}
 	
-	public void setUser(DBUser user)	{
+	public void setUser(String user)	{
 		this.user = user;
 	}
 
@@ -50,11 +52,11 @@ public class DBMessage extends DBIdentified {
 		this.content = content;
 	}
 	
-	public DBCategory getCategory() {
+	public String getCategory() {
 		return category;
 	}
 
-	public void setCategory(DBCategory category) {
+	public void setCategory(String category) {
 		this.category = category;
 	}
 
