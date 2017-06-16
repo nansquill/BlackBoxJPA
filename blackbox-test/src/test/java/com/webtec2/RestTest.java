@@ -1,7 +1,7 @@
 package com.webtec2;
 
 import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
-import com.webtec2.DBNews;
+import com.webtec2.DBMessage;
 import junit.framework.Assert;
 import junit.framework.Test;
 import junit.framework.TestCase;
@@ -40,17 +40,17 @@ public class RestTest extends TestCase {
 		clientConfig.register(JacksonJsonProvider.class);
 
 		final Client client = ClientBuilder.newClient(clientConfig);
-		final WebTarget resource = client.target("http://localhost:8080/example06");
+		final WebTarget resource = client.target("http://localhost:8080/blackbox");
 		final Response response = resource.path("news").request(MediaType.APPLICATION_JSON).get();
 
-		final List<DBNews> news = response.readEntity(new GenericType<List<DBNews>>() {});
+		final List<DBMessage> msg = response.readEntity(new GenericType<List<DBMessage>>() {});
 		// For single results, use
-		// final DBNews news = response.readEntity(DBNews.class);
+		// final DBMessage msg = response.readEntity(DBMessage.class);
 
-		Assert.assertEquals(1, news.size());
+		Assert.assertEquals(1, msg.size());
 
-		final DBNews item = news.get(0);
+		final DBMessage item = msg.get(0);
 
-		Assert.assertEquals("Startup", item.getHeadline());
+		Assert.assertEquals("Info", item.getHeadline());
 	}
 }

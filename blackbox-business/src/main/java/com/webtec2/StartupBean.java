@@ -18,18 +18,16 @@ public class StartupBean {
 	@PostConstruct
 	public void startup() {
 
-		final DBNews firstNewsItem = this.entityManager.find(DBNews.class, 1L);
+		final DBMessage firstMessageItem = this.entityManager.find(DBMessage.class, 1L);
+		
+		if(firstMessageItem == null) {
+			final DBMessage msg = new DBMessage();
+			msg.setHeadline("Info");
+			msg.setContent("Project has been successfully created.");
+			msg.setPublishedOn(new Date());
 
-		// only initialize once
-		if (firstNewsItem == null) {
-			final DBNews news = new DBNews();
-
-			news.setHeadline("Startup");
-			news.setContent("Startup Bean successfully executed");
-			news.setPublishedOn(new Date());
-
-			this.entityManager.persist(news);
-		}
+			this.entityManager.persist(msg);
+		}		
 	}
 
 	@PreDestroy
