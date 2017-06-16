@@ -10,14 +10,14 @@ The application follows a basic 3 layer structure, separating the persistence, b
 Similar to examples 04 and 05, some configuration can be found in the persistence.xml file. A noteworthy difference:
 Since we don't want to manually manage the persistence provider but use the one provided by the application server, some
 settings have to applied to the application server, rather than the application. In detail: the database connection is
-configured in the example06-ds.xml (in the example06-presentation module) and configured to be available under the jndi
-name 'java:jboss/datasources/example06'. In the persistence.xml, this jndi name is configured as the source of our
+configured in the blackbox-ds.xml (in the blackbox-presentation module) and configured to be available under the jndi
+name 'java:jboss/datasources/blackbox'. In the persistence.xml, this jndi name is configured as the source of our
 entity manager.
 
 
 * business: A maven module containing the RESTful application interface.
 
-The NewsCRUD is an exemplary class for handling resource requests using the tools of the JAX-RS specification presented
+The MessageCRUD is an exemplary class for handling resource requests using the tools of the JAX-RS specification presented
 in the lecture. The 'conf' package holds additional configurations, such as the activator for the JAX-RS subsystem and
 a provider for the JSON (de-)serialization library 'Jackson'. Additionally an EJB Startup Bean is provided, that allows
 to create some dummy data during the application startup.
@@ -55,21 +55,21 @@ The manual way:
 
 * Download the Wildfly Application Server 10.1 Full Profile (http://wildfly.org/downloads/) and extract the archive to a
 location of your choice.
-* Copy your web archive (located in example06-presentation/target/example06-presentation-0.1.SNAPSHOT.war) to
+* Copy your web archive (located in blackbox-presentation/target/blackbox-presentation-0.0.1.SNAPSHOT.war) to
 $WILDFLY_HOME/standalone/deployments/
 * Run $WILDFLY_HOME/bin/standalone.sh (or .bat if on windows) to start your application server.
 
 
 Using the wildfly-swarm maven plugin:
 
-* After 'mvn install'ing your application, switch to the example06-presentation directory and execute the 'package' goal
+* After 'mvn install'ing your application, switch to the blackbox-presentation directory and execute the 'package' goal
 of the 'wildfly-swarm' plugin (mvn wildfly-swarm:package).
 * Wait (a lot to download) until this steps succeeds.
-* You can either directly start the target/example06-...-swarm.jar (via java -jar) or
+* You can either directly start the target/blackbox-...-swarm.jar (via java -jar) or
 * Run mvn wildfly-swarm:run to start the application server.
 
 
 ------------
 
-Once the application server successfully started, the provided news resources should be available under
-'http://localhost:8080/example06/news' etc.
+Once the application server successfully started, the provided message resources should be available under
+'http://localhost:8080/blackbox/message' etc.
