@@ -18,6 +18,15 @@ public class StartupBean {
 	@PostConstruct
 	public void startup() {
 
+		DBUser benutzer = new DBUser();
+		benutzer.setUsername("Max");
+		benutzer.setPassword("1234");
+		benutzer.setCreatedOn(new Date());
+		benutzer.setLastVisitedOn(new Date());
+		benutzer.setIsAdmin(false);
+		
+		this.entityManager.persist(benutzer);
+		
 		final DBMessage firstMessageItem = this.entityManager.find(DBMessage.class, 1L);
 		
 		if(firstMessageItem == null) {
