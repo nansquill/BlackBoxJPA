@@ -25,11 +25,22 @@ to create some dummy data during the application startup.
 
 * presentation: A maven module for the web resources accessed by the users browser:
 
-Currently, this module holds no real resources, since this application has no web frontend yet. However, it aggregates
-the other components of the application to a web application archive. Since this module will represent the artifact
-being picked up by the application server, some further settings can be configured here. Most notably for now is the
-context root of the application, configured in the jboss-web.xml file.
+The dart sourcecode is located under 'src/main/dart'. It is a variant of the angular-quickstart (see
+https://github.com/angular-examples/quickstart) with some extensions to show the communication with the REST-backend.
+Namely, components for posting messages and viewing the latest messages have been added, as well as a Dart-DAO for encapsulating
+the data of the backend.
 
+The dart-compiler is configured in the pom.xml using the dart-maven-plugin. For this plugin to work, it is necessary to
+provide a path to the dart-sdk. In the given example, this is configured via a build property, which is defined the
+parent pom.xml. Currently this value is hardcorded and may have to be changed according to your setup to work properly.
+For a more flexible configuration that can be shared across multiple developers, an environment variable
+(e.g. ${env.DART_SDK}) may be used, which each developer can set for himself/herself accordingly.
+
+After successfully building the example app and deploying it in an application server, the application should be
+available under http://localhost:8080/blackbox.
+
+Attention: If you use the wildfly-swarm plugin to run your application, note that the wildfly-swarm:run goal is prone to
+errors. The wildfly-swarm:package goal (or rather the resulting ...-swarm.jar) should work fine.
 
 * test: A module containing test resources for the RESTful application interface.
 

@@ -17,9 +17,9 @@ import javax.ws.rs.core.Response;
 import java.util.Date;
 import java.util.List;
 
-@Path("/message")
+@Path("/messages")
 @Transactional
-public class MessageCRUD {
+public class MessagesCRUD {
 
 	@PersistenceContext
 	private EntityManager entityManager;
