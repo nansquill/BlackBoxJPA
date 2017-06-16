@@ -5,15 +5,13 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.util.Date;
-import com.webtec2.DBCategory;
-import com.webtec2.DBUser;
 
 @Entity
 @XmlRootElement
 public class DBMessage extends DBIdentified {
 
 	private DBCategory category;
-	private User user;
+	private DBUser user;
 	private String headline;
 	private String content;
 	private Date publishedOn;
