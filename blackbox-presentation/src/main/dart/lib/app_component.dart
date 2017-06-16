@@ -7,11 +7,11 @@ import 'package:blackbox/components/create/create_component.dart';
 
 @Component(
     selector: 'my-app',
-    directives: const [ShowNewest,CreateNews],
+    directives: const [ShowNewest,CreateMessages],
     template: '''
       <h1>Hello {{name}}</h1>
       <show-newest style="display: inline-block; vertical-align: top;"></show-newest>
-      <create-news style="display: inline-block; vertical-align: top; margin-left: 5em;"></create-news>
+      <create-messages style="display: inline-block; vertical-align: top; margin-left: 5em;"></create-messages>
     ''')
 class AppComponent {
   var name = 'Angular';
