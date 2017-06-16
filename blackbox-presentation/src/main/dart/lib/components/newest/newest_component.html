@@ -1,0 +1,19 @@
+<div>
+    <h3>Show Newest</h3>
+    <div *ngIf="hasBeenLoaded()">
+        <dl>
+            <dt>Heading</dt>
+            <dd>{{loaded.headline}}</dd>
+            <dt>Published on</dt>
+            <dd>{{loaded.publishedOn}}</dd>
+            <dt>Content</dt>
+            <dd>{{loaded.content}}</dd>
+			<dt>IsOnline</dt>
+            <dd>{{loaded.isOnline}}</dd>
+        </dl>
+    </div>
+    <div *ngIf="!hasBeenLoaded()">
+        Loading...
+    </div>
+    <button type="button" (click)="loadNewest($event)">Load Newest</button>
+</div>
