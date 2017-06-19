@@ -9,10 +9,9 @@ import java.util.Date;
 @Entity
 @XmlRootElement
 public class DBCategory extends DBIdentified {
-
-	private Date createdOn;
 	private String name;
 	private String description;
+	private Date createdOn;
 
 	@Temporal(TemporalType.TIMESTAMP)
 	public Date getCreatedOn() {
