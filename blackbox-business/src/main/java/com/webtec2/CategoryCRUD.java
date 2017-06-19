@@ -17,14 +17,25 @@ import java.util.List;
  */
 @Path("/categories")
 @Transactional
-public class CategoryCRUD {
+public class CategoryCRUD implements CRUDInterface<DBCategory> {
 
 	@PersistenceContext
 	private EntityManager entityManager;
 
+	@Override
+	@POST
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response create(final DBCategory category) {
+		this.entityManager.persist(category);
+
+		return Response.ok(category).build();
+	}
+
+	@Override
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	public List<DBCategory> readAllAsJSON() {
+	public List<DBCategory> readAll() {
 		final CriteriaBuilder builder = this.entityManager.getCriteriaBuilder();
 		final CriteriaQuery<DBCategory> query = builder.createQuery(DBCategory.class);
 
@@ -32,30 +43,36 @@ public class CategoryCRUD {
 
 		query.select(from);
 
-		return this.entityManager.createQuery(query).getResultList();
+		return entityManager.createQuery(query).getResultList();
 	}
 
-	@Path("/{name}")
+	@Override
+	@Path("/{id}")
 	@GET
 	@Consumes(MediaType.TEXT_PLAIN)
 	@Produces(MediaType.APPLICATION_JSON)
-	public DBCategory readAsJSON(@PathParam("name") final String name) {
-		return this.entityManager.find(DBCategory.class, name);
+	public DBCategory read(@PathParam("id") final long id) {
+		return entityManager.find(DBCategory.class, id);
 	}
 
-	// More idiomatic way of creating items
-	@POST
+	@Override
+	@PUT
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response create(final DBCategory param) {
-		final DBCategory msg = new DBCategory();
+	public Response update(DBCategory dbCategory) {
+		entityManager.merge(dbCategory);
 
-		msg.setName(param.getName());
-		msg.setDescription(param.getDescription());
-		msg.setCreatedOn(new Date());
+		return Response.ok(dbCategory).build();
+	}
 
-		this.entityManager.persist(msg);
+	@Override
+	@DELETE
+	@Path("/{id}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response delete(@PathParam("id") final long id) {
+		DBCategory tmp = entityManager.find(DBCategory.class, id);
+		entityManager.remove(tmp);
 
-		return Response.ok(msg).build();
+		return Response.ok(tmp).build();
 	}
 }
