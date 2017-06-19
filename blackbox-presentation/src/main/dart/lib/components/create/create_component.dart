@@ -2,18 +2,18 @@
 
 import 'package:angular2/angular2.dart';
 import 'dart:html';
-import 'package:blackbox/model/messages.dart';
+import 'package:blackbox/model/message.dart';
 
-@Component(selector: 'create-messages', templateUrl: 'create_component.html')
+@Component(selector: 'create-message', templateUrl: 'create_component.html')
 class CreateMessages {
 
-  Messages model;
+  Message model;
 
-  CreateMessages(){
-    model = new Messages();
+  CreateMessage(){
+    model = new Message();
   }
 
-  void postNews(dynamic e){
+  void postMessages(dynamic e){
     e.preventDefault();
     var requestHeaders = {
       'Content-Type':'application/json',

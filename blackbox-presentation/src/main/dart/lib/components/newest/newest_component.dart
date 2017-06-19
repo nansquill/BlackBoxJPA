@@ -3,12 +3,12 @@
 import 'package:angular2/angular2.dart';
 import 'dart:convert';
 import 'dart:html';
-import 'package:blackbox/model/messages.dart';
+import 'package:blackbox/model/message.dart';
 
 @Component(selector: 'show-newest', templateUrl: 'newest_component.html')
 class ShowNewest implements OnInit {
 
-  Messages loaded;
+  Message loaded;
 
   @override
   ngOnInit() {
@@ -25,13 +25,12 @@ class ShowNewest implements OnInit {
   void fetchNewest() {
     HttpRequest.request("../rest/messages/newest",method: "GET",requestHeaders: {'Accept':'application/json'}).then((response){
       var json = JSON.decode(response.responseText);
-      var messages = new Messages();
-      messages.content = json["content"];
-      messages.headline = json["headline"];
-      messages.id = json["id"];
-      messages.publishedOn = new DateTime.fromMillisecondsSinceEpoch(json["publishedOn"]);
-	  messages.isOnline = json["isOnline"];
-      loaded = messages;
+      var msg = new Message();
+      msg.content = json["content"];
+      msg.headline = json["headline"];
+      msg.id = json["id"];
+      msg.publishedOn = new DateTime.fromMillisecondsSinceEpoch(json["publishedOn"]);
+      loaded = msg;
     }).catchError((n)=>print(n));
   }
 }
