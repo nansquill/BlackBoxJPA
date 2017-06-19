@@ -83,7 +83,7 @@ public class MessagesCRUD {
 		}
 		return message;
 	}
-	
+
 	@Path("/create/{user_id}/{category_id}/{headline}/{content}")
 	@GET
 	@Consumes(MediaType.TEXT_PLAIN)
