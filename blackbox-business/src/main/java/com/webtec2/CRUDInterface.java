@@ -14,5 +14,7 @@ public interface CRUDInterface<T> {
     //Update T data by obj -> Path: /update
     Response update(T t);
     //delete T obj -> Path: /delete
-    Response delete(long id);
+    Response delete(T t);    
+    //delete T by id -> Path: /delete/{id}
+    Response deleteById(long id);
 }
