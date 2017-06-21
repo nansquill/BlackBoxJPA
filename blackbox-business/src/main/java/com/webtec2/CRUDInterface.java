@@ -3,6 +3,7 @@ package com.webtec2;
 import javax.ws.rs.core.Response;
 import java.util.List;
 
+
 public interface CRUDInterface<T> {
     //Create new T -> Path: /create 
     Response create(T t);
