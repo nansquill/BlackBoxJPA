@@ -15,12 +15,11 @@ Irina Solovyeva
 + Update web interface (blackbox-presentation)
 + Create Unit test cases (blackbox-test)
 
-#0.0.1-SNAPSHOT released
+# 0.0.1-SNAPSHOT released
 + :8080/blackbox -> web application
-+ :8080/rest -> REST Interface
-+ :8080/rest/{messages|types|persons)/
++ :8080/rest/{messages|types|persons)/ -> REST Interface
 
-#DESCRIPTION
+# DESCRIPTION
 
 A small project that exposes rudimentary (RESTful) web services.
 
