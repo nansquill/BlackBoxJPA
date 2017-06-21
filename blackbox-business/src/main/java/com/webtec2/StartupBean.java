@@ -28,18 +28,24 @@ public class StartupBean {
 			
 			
 			//Create Administrator user
-			final DBUser user = new DBUser("Max", "1234");
+			final DBUser user = new DBUser();
+			user.setUsername("MaX");
+			user.setPassword("1234");
 			user.setIsAdmin(true);
 			
 			this.entityManager.persist(user);
 			
-			final DBCategory category = new DBCategory("Verkaufe", "Verkaufskategorie");
+			final DBCategory category = new DBCategory();
+			category.setName("Verkauf");
+			category.setDescription("Verkaufskategorie");
 			
 			this.entityManager.persist(category);
 			
 			//Create first message
-			final DBMessage msg = new DBMessage(user, category, "Information", "Project has been successfully created.");
-
+			final DBMessage msg = new DBMessage()
+			msg.setUser(user);
+			msg.setCategory(category);
+			msg.setHeadline("Information", "Project has been successfully created!");
 			this.entityManager.persist(msg);
 		}		
 	}

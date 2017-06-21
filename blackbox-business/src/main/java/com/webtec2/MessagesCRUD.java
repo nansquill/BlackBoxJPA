@@ -27,7 +27,7 @@ import java.util.ArrayList;
 
 @Path("/messages")
 @Transactional
-public class MessagesCRUD {
+public class MessagesCRUD implements CRUDInterface<DBMessage> {
 
 	/**
 	 * API overview:
@@ -45,7 +45,7 @@ public class MessagesCRUD {
 	
 	@GET 
 	@Produces(MediaType.APPLICATION_JSON)
-	public List<DBMessage> read()	{
+	public List<DBMessage> readAll()	{
 		final CriteriaBuilder builder;
 		List<DBMessage> result = new ArrayList<DBMessage>();
 		try
@@ -71,7 +71,7 @@ public class MessagesCRUD {
 	@GET
 	@Consumes(MediaType.TEXT_PLAIN)
 	@Produces(MediaType.APPLICATION_JSON)
-	public DBMessage readById(@PathParam("id") final long id) {
+	public DBMessage read(@PathParam("id") final long id) {
 		DBMessage message = null;
 		try
 		{

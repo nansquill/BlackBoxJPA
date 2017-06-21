@@ -29,7 +29,7 @@ import java.util.HashMap;
 
 @Path("/persons")
 @Transactional
-public class UsersCRUD {
+public class UsersCRUD implements CRUDInterface<DBUser> {
 	
 	/**
 	 * API overview:
@@ -48,7 +48,7 @@ public class UsersCRUD {
 	
 	@GET 
 	@Produces(MediaType.APPLICATION_JSON)
-	public List<DBUser> read()	{
+	public List<DBUser> readAll()	{
 		final CriteriaBuilder builder;
 		List<DBUser> result = new ArrayList<DBUser>();
 		try
@@ -74,7 +74,7 @@ public class UsersCRUD {
 	@GET
 	@Consumes(MediaType.TEXT_PLAIN)
 	@Produces(MediaType.APPLICATION_JSON)
-	public DBUser readById(@PathParam("id") final long id) {
+	public DBUser read(@PathParam("id") final long id) {
 		DBUser user = null;
 		try
 		{

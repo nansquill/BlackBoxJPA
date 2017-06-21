@@ -27,7 +27,7 @@ import java.util.ArrayList;
 
 @Path("/types")
 @Transactional
-public class CategoriesCRUD {
+public class CategoriesCRUD implements CRUDInterface<DBCategory>{
 	
 	/**
 	 * API overview:
@@ -45,7 +45,7 @@ public class CategoriesCRUD {
 	
 	@GET 
 	@Produces(MediaType.APPLICATION_JSON)
-	public List<DBCategory> read()	{
+	public List<DBCategory> readAll()	{
 		final CriteriaBuilder builder;
 		List<DBCategory> result = new ArrayList<DBCategory>();
 		try
@@ -71,7 +71,7 @@ public class CategoriesCRUD {
 	@GET
 	@Consumes(MediaType.TEXT_PLAIN)
 	@Produces(MediaType.APPLICATION_JSON)
-	public DBCategory readById(@PathParam("id") final long id) {
+	public DBCategory read(@PathParam("id") final long id) {
 		DBCategory category = null;
 		try
 		{

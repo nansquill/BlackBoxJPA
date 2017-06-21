@@ -22,10 +22,9 @@ import java.util.Date;
 })
 @XmlRootElement
 public class DBCategory extends DBIdentified {
-
-	private Date createdOn;
 	private String name;
 	private String description;
+	private Date createdOn;
 
 	public DBCategory() { }
 	
