@@ -4,7 +4,7 @@ import javax.ws.rs.core.Response;
 import java.util.List;
 
 public interface CRUDInterface<T> {
-	//Create new T -> Path: /create 
+    //Create new T -> Path: /create 
     Response create(T t);
     //Read all T data -> Path: / 
     List<T> readAll();
