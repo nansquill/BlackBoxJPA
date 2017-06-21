@@ -7,6 +7,10 @@ import javax.ejb.Startup;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.util.Date;
+import com.webtec2.DBUser;
+import com.webtec2.DBMessage;
+import java.util.UUID;
+import java.util.HashMap;
 
 @Singleton
 @Startup
@@ -17,24 +21,29 @@ public class StartupBean {
 
 	@PostConstruct
 	public void startup() {
-
-		DBUser benutzer = new DBUser();
-		benutzer.setUsername("Max");
-		benutzer.setPassword("1234");
-		benutzer.setCreatedOn(new Date());
-		benutzer.setLastVisitedOn(new Date());
-		benutzer.setIsAdmin(false);
-		
-		this.entityManager.persist(benutzer);
 		
 		final DBMessage firstMessageItem = this.entityManager.find(DBMessage.class, 1L);
 		
 		if(firstMessageItem == null) {
-			final DBMessage msg = new DBMessage();
-			msg.setHeadline("Info");
-			msg.setContent("Project has been successfully created.");
-			msg.setPublishedOn(new Date());
-
+			//Create Administrator user
+			final DBUser user = new DBUser();
+			user.setUsername("MaX");
+			user.setPassword("1234");
+			user.setIsAdmin(true);
+			
+			this.entityManager.persist(user);
+					
+			final DBCategory category = new DBCategory();
+			category.setName("Verkauf");
+			category.setDescription("Verkaufskategorie");
+						
+			this.entityManager.persist(category);
+					
+			//Create first message
+			final DBMessage msg = new DBMessage()
+			msg.setUser(user);
+			msg.setCategory(category);
+			msg.setHeadline("Information", "Project has been successfully created!");
 			this.entityManager.persist(msg);
 		}		
 	}

@@ -29,7 +29,6 @@ public class DBUser extends DBIdentified {
 	private String password;
 	private Date createdOn;
 	private Date lastVisitedOn;
-	private String group;
 	private boolean isAdmin;
 	
 	public DBUser() { }
@@ -80,14 +79,6 @@ public class DBUser extends DBIdentified {
 	@Column(name="password")
 	public String getPassword() {
 		return password;
-	}
-	
-	public void setGroup(String group) {
-		this.group = group;
-	}
-	
-	public String getGroup() {
-		return group;
 	}
 
 	public void setPassword(String password) {
