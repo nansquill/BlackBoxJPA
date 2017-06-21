@@ -3,7 +3,7 @@
 import 'package:angular2/angular2.dart';
 import 'dart:convert';
 import 'dart:html';
-import 'package:blackbox/model/message.dart';
+import 'package:blackbox/models/message.dart';
 
 @Component(selector: 'show-newest', templateUrl: 'newest_component.html')
 class ShowNewest implements OnInit {

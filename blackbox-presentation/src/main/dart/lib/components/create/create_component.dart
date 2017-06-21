@@ -2,7 +2,7 @@
 
 import 'package:angular2/angular2.dart';
 import 'dart:html';
-import 'package:blackbox/model/message.dart';
+import 'package:blackbox/models/message.dart';
 
 @Component(selector: 'create-message', templateUrl: 'create_component.html')
 class CreateMessages {
