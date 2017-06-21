@@ -25,19 +25,19 @@ import java.util.Date;
 import java.util.List;
 import java.util.ArrayList;
 
-@Path("/messages")
+@Path("/types")
 @Transactional
-public class MessagesCRUD implements CRUDInterface<DBMessage> {
-
+public class CategoriesCRUD implements CRUDInterface<DBCategory>{
+	
 	/**
 	 * API overview:
-	 *  / @GET -> read all message data
-	 *  /id @GET -> read data from message {id}
-	 *  / @POST -> create new message
-	 *  /create/{message_id}/{category_id}/{headline}/{content} @GET -> create new message by data
-	 *  /delete @POST -> remove message
-	 *  /delete/{id} @GET -> remove message {id}
-	 *  /update @POST -> update message data
+	 *  / @GET -> read all category data
+	 *  /id @GET -> read data from category {id}
+	 *  / @POST -> create new category
+	 *  /create/{name}/{description} @GET -> create new category by data
+	 *  /delete @POST -> remove category
+	 *  /delete/{id} @GET -> remove category {id}
+	 *  /update @POST -> update category data
 	 */	
 
 	@PersistenceContext
@@ -45,14 +45,14 @@ public class MessagesCRUD implements CRUDInterface<DBMessage> {
 	
 	@GET 
 	@Produces(MediaType.APPLICATION_JSON)
-	public List<DBMessage> readAll()	{
+	public List<DBCategory> readAll()	{
 		final CriteriaBuilder builder;
-		List<DBMessage> result = new ArrayList<DBMessage>();
+		List<DBCategory> result = new ArrayList<DBCategory>();
 		try
 		{
 			builder = this.entityManager.getCriteriaBuilder();
-			CriteriaQuery<DBMessage> query = builder.createQuery(DBMessage.class);			
-			Root<DBMessage> from = query.from(DBMessage.class);			
+			CriteriaQuery<DBCategory> query = builder.createQuery(DBCategory.class);			
+			Root<DBCategory> from = query.from(DBCategory.class);			
 			query.select(from);
 			result = this.entityManager.createQuery(query).getResultList();	
 		}
@@ -71,32 +71,29 @@ public class MessagesCRUD implements CRUDInterface<DBMessage> {
 	@GET
 	@Consumes(MediaType.TEXT_PLAIN)
 	@Produces(MediaType.APPLICATION_JSON)
-	public DBMessage read(@PathParam("id") final long id) {
-		DBMessage message = null;
+	public DBCategory read(@PathParam("id") final long id) {
+		DBCategory category = null;
 		try
 		{
-			message =  this.entityManager.find(DBMessage.class, id);
+			category =  this.entityManager.find(DBCategory.class, id);
 		}
 		catch(IllegalArgumentException ex)
 		{
 			//if the first argument does not denote an entity type or the second argument is is not a valid type for that entity primary key or is null
 		}
-		return message;
+		return category;
 	}
-
-	@Path("/create/{user_id}/{category_id}/{headline}/{content}")
+	
+	@Path("/create/{name}/{description}")
 	@GET
 	@Consumes(MediaType.TEXT_PLAIN)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response createByUserAndCategoryAndHeadlineAndContent(@PathParam("user_id") final int user_id, @PathParam("category_id") final int category_id, 
-			@PathParam("headline") final String headline, @PathParam("content") final String content) {
-		final DBMessage message;
+	public Response createByNameAndDescription(@PathParam("name") final String name, @PathParam("description") final String description) {
+		final DBCategory category;
 		try
-		{
-			final DBUser user = this.entityManager.find(DBUser.class, user_id);
-			final DBCategory category = this.entityManager.find(DBCategory.class, category_id);		
-			message = new DBMessage(user, category, headline, content);
-			this.entityManager.persist(message);
+		{		
+			category = new DBCategory(name, description);
+			this.entityManager.persist(category);
 		}
 		catch(EntityExistsException ex)
 		{
@@ -113,7 +110,7 @@ public class MessagesCRUD implements CRUDInterface<DBMessage> {
 			//if invoked on a container-managed entity manager of type PersistenceContextType.TRANSACTION and there is no transaction
 			return Response.status(Status.INTERNAL_SERVER_ERROR).build();
 		}
-		return Response.ok(message).build();
+		return Response.ok(category).build();
 	}
 	
 	
@@ -121,12 +118,12 @@ public class MessagesCRUD implements CRUDInterface<DBMessage> {
 	@POST
 	@Consumes(MediaType.TEXT_PLAIN)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response create(final DBMessage param) {
-		final DBMessage message;
+	public Response create(final DBCategory param) {
+		final DBCategory category;
 		try
 		{
-			message = new DBMessage(param.getUser(), param.getCategory(), param.getHeadline(), param.getContent());
-			this.entityManager.persist(message);
+			category = new DBCategory(param.getName(), param.getDescription());
+			this.entityManager.persist(category);
 		}
 		catch(EntityExistsException ex)
 		{
@@ -143,7 +140,7 @@ public class MessagesCRUD implements CRUDInterface<DBMessage> {
 			//if invoked on a container-managed entity manager of type PersistenceContextType.TRANSACTION and there is no transaction
 			return Response.status(Status.INTERNAL_SERVER_ERROR).build();
 		}
-		return Response.ok(message).build();		
+		return Response.ok(category).build();		
 	}
 	
 	@Path("/delete/{id}")
@@ -151,11 +148,11 @@ public class MessagesCRUD implements CRUDInterface<DBMessage> {
 	@Consumes(MediaType.TEXT_PLAIN)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response deleteById(@PathParam("id") final long id) {
-		DBMessage message = null;
+		DBCategory category = null;
 		try
 		{
-			message = this.entityManager.find(DBMessage.class, id);
-			this.entityManager.remove(message);
+			category = this.entityManager.find(DBCategory.class, id);
+			this.entityManager.remove(category);
 		}
 		catch(IllegalArgumentException ex)
 		{
@@ -168,14 +165,14 @@ public class MessagesCRUD implements CRUDInterface<DBMessage> {
 			//if invoked on a container-managed entity manager of type PersistenceContextType.TRANSACTION and there is no transaction
 			return Response.status(Status.INTERNAL_SERVER_ERROR).build();
 		}		
-		return Response.ok(message).build();	
+		return Response.ok(category).build();	
 	}
 	
 	@Path("/delete")
 	@POST
 	@Consumes(MediaType.TEXT_PLAIN)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response delete(final DBMessage param) {
+	public Response delete(final DBCategory param) {
 		try
 		{
 			this.entityManager.remove(param);
@@ -197,7 +194,7 @@ public class MessagesCRUD implements CRUDInterface<DBMessage> {
 	@POST
 	@Consumes(MediaType.TEXT_PLAIN)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response update(final DBMessage param) {		
+	public Response update(final DBCategory param) {		
 		try
 		{
 			this.entityManager.refresh(param);
@@ -219,5 +216,5 @@ public class MessagesCRUD implements CRUDInterface<DBMessage> {
 		}
 		
 		return Response.ok(param).build();	
-	}
+	}	
 }

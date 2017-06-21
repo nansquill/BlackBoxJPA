@@ -20,6 +20,5 @@ class CreateMessages {
       'Accept':'application/json'
     };
     HttpRequest.request("../rest/messages",method: "POST",sendData: model.toJSON(),requestHeaders: requestHeaders).catchError((n)=>print(n));
-
   }
 }
