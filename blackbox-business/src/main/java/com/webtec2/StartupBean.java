@@ -40,10 +40,11 @@ public class StartupBean {
 			this.entityManager.persist(category);
 					
 			//Create first message
-			final DBMessage msg = new DBMessage()
+			final DBMessage msg = new DBMessage();
 			msg.setUser(user);
 			msg.setCategory(category);
-			msg.setHeadline("Information", "Project has been successfully created!");
+			msg.setHeadline("Information");
+			msg.setContent("Project has been successfully created!");
 			this.entityManager.persist(msg);
 		}		
 	}

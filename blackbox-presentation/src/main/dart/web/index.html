@@ -1,17 +1,46 @@
 <!DOCTYPE html>
 <html>
-    <head>
+	<head lang="de">
 		<base href="/blackbox/web/"/>
-        <title>Hello Blackbox</title>
-
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylesheet" type="text/css" href="styles.css">
+		<link rel='shortcut icon' type='image/x-icon' href='favicon.ico' />
+		<meta charset="UTF-8">
+	    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+	    <meta name="viewport" content="width=device-width, initial-scale=1">
+	    <title>Schwarzes Brett</title>
+	    <!-- Latest compiled and minified CSS -->
+	    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+	    
+	    <!-- THEME: Simplex@Bootswatch -->
+	    <link rel="stylesheet" href="https://bootswatch.com/simplex/bootstrap.min.css">
+		<link rel="stylesheet" type="text/css" href="styles.css">
+	    
+	    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+	    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+	    <!-- Latest compiled and minified JavaScript -->
+	    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>       
 
         <script defer src="main.dart" type="application/dart"></script>
         <script defer src="packages/browser/dart.js"></script>
     </head>
-    <body style="background: url('bilder/hintergrund-landing.jpg');">
-        <my-app>Loading...</my-app>
+    <body>
+		<nav class="navbar navbar-default navbar-static-top">
+        	<div class="container">
+	        	<div class="row">
+	          		<div class="col-md-offset-1 col-lg-offset-1 col-md-10 col-lg-10">
+		            	<div class="navbar-header">
+		              		<a class="navbar-brand" href="/blackbox/" ng-cloak>Schwarzes Brett</a>
+		            	</div>
+		            	
+		          	</div>
+	        	</div>
+        	</div>
+		</nav>
+		<div class="container">
+			<div class="row">
+				<div class="col-md-offset-1 col-lg-offset-1 col-md-10 col-lg-10">
+					<my-app>Loading...</my-app>
+				</div>
+			</div>
+		</div>        
     </body>
 </html>

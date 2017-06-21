@@ -1,27 +1,25 @@
 # BlackBoxJPA
-last modified: 16.06.17, 17:40
+
 ver:0.0.1-SNAPSHOT
-contributors:
+last modified: 21.06.17
+
+contributors: 
 Marcel Marchewka
 Yunus Öztürk
 Milosz Sobieraj
 Irina Solovyeva
 
-NEXT (0.0.2):
-+ Add new entities (if needed) (blackbox-persistence)
+# NEXT (0.0.2):
++ Add new entities (if needed) (blackbox-persistence) 
 + Extend REST-Interface with CRUD-classes (blackbox-business)
 + Update web interface (blackbox-presentation)
 + Create Unit test cases (blackbox-test)
 
-
-0.0.1-SNAPSHOT released
-=======================
+# 0.0.1-SNAPSHOT released
 + :8080/blackbox -> web application
-+ :8080/rest -> REST Interface
-+ :8080/rest/messages/new/{headline}/{content} -> create new message
-=============================
++ :8080/rest/{messages|types|persons)/ -> REST Interface
 
-
+# DESCRIPTION
 
 A small project that exposes rudimentary (RESTful) web services.
 
