@@ -27,7 +27,7 @@ import java.util.ArrayList;
 
 @Path("/messages")
 @Transactional
-public class MessagesCRUD implements CRUDInterface<DBMessage> {
+public class MessagesCRUD extends CRUDInterface<DBMessage> {
 
 	/**
 	 * API overview:

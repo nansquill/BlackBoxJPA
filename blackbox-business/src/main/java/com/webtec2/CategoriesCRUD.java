@@ -27,7 +27,7 @@ import java.util.ArrayList;
 
 @Path("/types")
 @Transactional
-public class CategoriesCRUD implements CRUDInterface<DBCategory>{
+public class CategoriesCRUD {
 	
 	/**
 	 * API overview:
@@ -69,7 +69,6 @@ public class CategoriesCRUD implements CRUDInterface<DBCategory>{
 	
 	@Path("/{id}")
 	@GET
-	@Consumes(MediaType.TEXT_PLAIN)
 	@Produces(MediaType.APPLICATION_JSON)
 	public DBCategory read(@PathParam("id") final long id) {
 		DBCategory category = null;
@@ -83,40 +82,25 @@ public class CategoriesCRUD implements CRUDInterface<DBCategory>{
 		}
 		return category;
 	}
-	
-	@Path("/create/{name}/{description}")
+
+	@Path("/{name}")
 	@GET
-	@Consumes(MediaType.TEXT_PLAIN)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response createByNameAndDescription(@PathParam("name") final String name, @PathParam("description") final String description) {
-		final DBCategory category;
+	public DBCategory read(@PathParam("name") String name) {
+		DBCategory category = null;
 		try
-		{		
-			category = new DBCategory(name, description);
-			this.entityManager.persist(category);
-		}
-		catch(EntityExistsException ex)
 		{
-			//if the entity already exists.
-			return Response.status(Status.CONFLICT).build();
+			category =  this.entityManager.find(DBCategory.class, name);
 		}
 		catch(IllegalArgumentException ex)
 		{
-			//if the instance is not an entity
-			return Response.status(Status.BAD_REQUEST).build();
+			//if the first argument does not denote an entity type or the second argument is is not a valid type for that entity primary key or is null
 		}
-		catch(TransactionRequiredException ex)
-		{
-			//if invoked on a container-managed entity manager of type PersistenceContextType.TRANSACTION and there is no transaction
-			return Response.status(Status.INTERNAL_SERVER_ERROR).build();
-		}
-		return Response.ok(category).build();
+		return category;
 	}
-	
-	
-	@Path("/create")
+
 	@POST
-	@Consumes(MediaType.TEXT_PLAIN)
+	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response create(final DBCategory param) {
 		final DBCategory category;
@@ -143,15 +127,14 @@ public class CategoriesCRUD implements CRUDInterface<DBCategory>{
 		return Response.ok(category).build();		
 	}
 	
-	@Path("/delete/{id}")
+	@Path("/delete/{name}")
 	@GET
-	@Consumes(MediaType.TEXT_PLAIN)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response deleteById(@PathParam("id") final long id) {
+	public Response deleteById(@PathParam("name") String name) {
 		DBCategory category = null;
 		try
 		{
-			category = this.entityManager.find(DBCategory.class, id);
+			category = this.entityManager.find(DBCategory.class, name);
 			this.entityManager.remove(category);
 		}
 		catch(IllegalArgumentException ex)
@@ -170,7 +153,7 @@ public class CategoriesCRUD implements CRUDInterface<DBCategory>{
 	
 	@Path("/delete")
 	@POST
-	@Consumes(MediaType.TEXT_PLAIN)
+	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response delete(final DBCategory param) {
 		try
@@ -192,7 +175,6 @@ public class CategoriesCRUD implements CRUDInterface<DBCategory>{
 	
 	@Path("/update")
 	@POST
-	@Consumes(MediaType.TEXT_PLAIN)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response update(final DBCategory param) {		
 		try

@@ -32,20 +32,7 @@ public class StartupBean {
 			user.setIsAdmin(true);
 			
 			this.entityManager.persist(user);
-					
-			final DBCategory category = new DBCategory();
-			category.setName("Verkauf");
-			category.setDescription("Verkaufskategorie");
-						
-			this.entityManager.persist(category);
-					
-			//Create first message
-			final DBMessage msg = new DBMessage();
-			msg.setUser(user);
-			msg.setCategory(category);
-			msg.setHeadline("Information");
-			msg.setContent("Project has been successfully created!");
-			this.entityManager.persist(msg);
+
 		}		
 	}
 
