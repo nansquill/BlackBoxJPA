@@ -12,7 +12,7 @@ import 'package:blackbox/components/register/register_user_component.dart';
 
 @Component(
     selector: 'my-app',
-    directives: const [ShowNewest,CreateMessages,RegisterUser],
+    directives: const [ROUTER_DIRECTIVES, ShowNewest,CreateMessages,RegisterUser],
     template: '''
     <h1>Hello {{name}}</h1>
     <show-newest style="display: inline-block; vertical-align: top;"></show-newest>
@@ -26,6 +26,7 @@ import 'package:blackbox/components/register/register_user_component.dart';
     const Route(
       path: '/box/:name', name: 'Box', component: BoxComponent,
     ),
+    // const Route(path: '/boxes', name: 'Boxes', component: BoxesList)
   ]
 )
 
