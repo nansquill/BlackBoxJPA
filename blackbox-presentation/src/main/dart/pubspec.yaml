@@ -20,6 +20,8 @@ transformers:
     - 'package:angular2/common.dart#COMMON_DIRECTIVES'
     platform_pipes:
     - 'package:angular2/common.dart#COMMON_PIPES'
+    resolved_identifiers:
+      Client: 'package:http/http.dart'
     entry_points: web/main.dart
 - angular2/transform/reflection_remover:
     $include: test/**_test.dart
