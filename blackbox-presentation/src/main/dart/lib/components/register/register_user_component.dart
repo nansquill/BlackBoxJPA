@@ -2,7 +2,7 @@
 
 import 'package:angular2/angular2.dart';
 import 'dart:html';
-import 'package:blackbox/model/user.dart';
+import 'package:blackbox/models/user.dart';
 
 @Component(selector: 'register-user', templateUrl: 'register_user_component.html')
 class RegisterUser {

@@ -11,3 +11,14 @@ a {
   cursor: pointer;
   cursor: hand;
 }
+
+.ng-cloak {
+	display: none;
+}
+.has-error .form-control {
+	background-color: #f2dede;
+}
+[ng\:cloak],[ng-cloak],[data-ng-cloak],[x-ng-cloak],.ng-cloak,.x-ng-cloak
+	{
+	display: none !important;
+}
