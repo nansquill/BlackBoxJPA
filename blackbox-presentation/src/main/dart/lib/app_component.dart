@@ -6,6 +6,7 @@ import 'package:angular2/angular2.dart';
 
 import 'package:blackbox/components/newest/newest_component.dart';
 import 'package:blackbox/components/create/create_component.dart';
+import 'package:blackbox/components/login/login_component.dart';
 import 'package:blackbox/components/register/register_user_component.dart';
 
 @Component(
@@ -13,10 +14,12 @@ import 'package:blackbox/components/register/register_user_component.dart';
     directives: const [ShowNewest,CreateMessages,RegisterUser],
     template: '''
     <h1>Hello {{name}}</h1>
+    <login></login>
+    <br />
     <show-newest style="display: inline-block; vertical-align: top;"></show-newest>
     <create-message style="display: inline-block; vertical-align: top; margin-left: 5em;"></create-message>
     <register-user style="display: inline-block; vertical-align: top; margin-left: 5em;"></register-user>    
     ''')
 class AppComponent {
-  var name = 'Apppp3';
+  var name = 'Angular';
 }

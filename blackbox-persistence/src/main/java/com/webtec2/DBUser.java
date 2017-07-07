@@ -1,5 +1,7 @@
 package com.webtec2;
 
+import java.io.Serializable;
+
 import java.util.HashSet;
 import java.util.Set;
 import javax.persistence.CascadeType;
@@ -23,10 +25,13 @@ import com.webtec2.DBMessage;
 	@UniqueConstraint(columnNames="id")
 })
 @XmlRootElement
-public class DBUser extends DBIdentified {
+public class DBUser extends DBIdentified implements Serializable{
 
+	private static final long serialVersionUID = -4746333924452133573L;
+	
 	private String username;
 	private String password;
+	private String salt;
 	private Date createdOn;
 	private Date lastVisitedOn;
 	private boolean isAdmin;
@@ -72,6 +77,17 @@ public class DBUser extends DBIdentified {
 	
 	public void setUsername(String username) {
 		this.username = username;
+	}
+	
+	@JsonIgnore
+	@JsonProperty(value="salt")
+	@Column(name="salt")
+	public String getSalt() {
+		return salt;
+	}
+	
+	public void setSalt(String salt) {
+		this.salt = salt;
 	}
 
 	@JsonIgnore

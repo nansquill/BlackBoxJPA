@@ -1,16 +1,18 @@
 package com.webtec2;
 
+import com.webtec2.auth.permission.FirstMessageItemPermission;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authz.Permission;
+import org.apache.shiro.authz.annotation.RequiresAuthentication;
+import org.apache.shiro.authz.annotation.RequiresRoles;
+import org.apache.shiro.subject.Subject;
+
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Order;
 import javax.persistence.criteria.Root;
-import javax.persistence.EntityExistsException;
-import javax.persistence.EntityNotFoundException;
-import java.lang.IllegalStateException;
-import java.lang.IllegalArgumentException;
-import javax.persistence.TransactionRequiredException;
 import javax.transaction.Transactional;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -24,6 +26,14 @@ import javax.ws.rs.core.Response.Status;
 import java.util.Date;
 import java.util.List;
 import java.util.ArrayList;
+
+import javax.persistence.TransactionRequiredException;
+import javax.persistence.EntityExistsException;
+import javax.persistence.EntityNotFoundException;
+import java.lang.IllegalStateException;
+import java.lang.IllegalArgumentException;
+
+
 
 @Path("/messages")
 @Transactional
@@ -67,12 +77,37 @@ public class MessagesCRUD implements CRUDInterface<DBMessage> {
 		return result;	
 	}
 	
+	@GET
+	@Path("/newest")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response readNewestMessage() {
+		final CriteriaBuilder builder = this.entityManager.getCriteriaBuilder();
+		final CriteriaQuery<DBMessage> query = builder.createQuery(DBMessage.class);
+
+		final Root<DBMessage> from = query.from(DBMessage.class);
+
+		query.select(from);
+
+		final DBMessage result = this.entityManager.createQuery(query).setMaxResults(1).getSingleResult();
+
+		// Attribute based permission check using permissions
+		final Subject subject = SecurityUtils.getSubject();
+		final Permission firstMessageItemPermission = new FirstMessageItemPermission(result);
+
+		if (!subject.isPermitted(firstMessageItemPermission)) {
+			return Response.status(Response.Status.UNAUTHORIZED).build();
+		}
+
+		return Response.ok(result).build();
+	}
+	
+	
 	@Path("/{id}")
 	@GET
 	@Consumes(MediaType.TEXT_PLAIN)
 	@Produces(MediaType.APPLICATION_JSON)
 	public DBMessage read(@PathParam("id") final long id) {
-		DBMessage message = null;
+		DBMessage message = null;		
 		try
 		{
 			message =  this.entityManager.find(DBMessage.class, id);
@@ -119,8 +154,10 @@ public class MessagesCRUD implements CRUDInterface<DBMessage> {
 	
 	@Path("/create")
 	@POST
-	@Consumes(MediaType.TEXT_PLAIN)
+	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
+	@RequiresAuthentication
+	@RequiresRoles("admin")
 	public Response create(final DBMessage param) {
 		final DBMessage message;
 		try
