@@ -66,7 +66,8 @@ public class CategoriesCRUD {
 		}
 		return result;	
 	}
-	
+
+	/*
 	@Path("/{id}")
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
@@ -82,6 +83,7 @@ public class CategoriesCRUD {
 		}
 		return category;
 	}
+	 */
 
 	@Path("/{name}")
 	@GET
@@ -91,6 +93,10 @@ public class CategoriesCRUD {
 		try
 		{
 			category =  this.entityManager.find(DBCategory.class, name);
+			if (category == null) {
+				category = new DBCategory(name);
+				this.entityManager.persist(category);
+			}
 		}
 		catch(IllegalArgumentException ex)
 		{
@@ -106,7 +112,7 @@ public class CategoriesCRUD {
 		final DBCategory category;
 		try
 		{
-			category = new DBCategory(param.getName(), param.getDescription());
+			category = new DBCategory(param.getName());
 			this.entityManager.persist(category);
 		}
 		catch(EntityExistsException ex)
