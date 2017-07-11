@@ -9,7 +9,7 @@ class CreateMessages {
 
   Message model;
 
-  CreateMessage(){
+  CreateMessages(){
     model = new Message();
   }
 
@@ -19,6 +19,6 @@ class CreateMessages {
       'Content-Type':'application/json',
       'Accept':'application/json'
     };
-    HttpRequest.request("../rest/messages",method: "POST",sendData: model.toJSON(),requestHeaders: requestHeaders).catchError((n)=>print(n));
+    HttpRequest.request("../rest/messages/create",method: "POST",sendData: model.toJSON(),requestHeaders: requestHeaders).catchError((n)=>print(n));
   }
 }
