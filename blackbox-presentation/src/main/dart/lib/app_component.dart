@@ -11,15 +11,8 @@ import 'package:blackbox/components/register/register_user_component.dart';
 
 @Component(
     selector: 'my-app',
-    directives: const [ShowNewest,CreateMessages,RegisterUser],
-    template: '''
-    <h1>Hello {{name}}</h1>
-    <login></login>
-    <br />
-    <show-newest style="display: inline-block; vertical-align: top;"></show-newest>
-    <create-message style="display: inline-block; vertical-align: top; margin-left: 5em;"></create-message>
-    <register-user style="display: inline-block; vertical-align: top; margin-left: 5em;"></register-user>    
-    ''')
+    directives: const [ShowNewest,CreateMessages,RegisterUser,LoginComponents],
+    templateUrl: 'app_component.html')
 class AppComponent {
   var name = 'Angular';
 }

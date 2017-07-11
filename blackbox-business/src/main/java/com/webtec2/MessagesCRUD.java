@@ -6,6 +6,9 @@ import org.apache.shiro.authz.Permission;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.apache.shiro.subject.Subject;
+import org.apache.shiro.session.Session;
+import org.apache.shiro.authc.UnknownAccountException;
+import org.apache.shiro.authc.UsernamePasswordToken;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -57,7 +60,7 @@ public class MessagesCRUD implements CRUDInterface<DBMessage> {
 	@Produces(MediaType.APPLICATION_JSON)
 	public List<DBMessage> readAll()	{
 		final CriteriaBuilder builder;
-		List<DBMessage> result = new ArrayList<DBMessage>();
+		List<DBMessage> result = new ArrayList<DBMessage>();		
 		try
 		{
 			builder = this.entityManager.getCriteriaBuilder();
@@ -157,12 +160,11 @@ public class MessagesCRUD implements CRUDInterface<DBMessage> {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	@RequiresAuthentication
-	@RequiresRoles("admin")
 	public Response create(final DBMessage param) {
 		final DBMessage message;
 		try
 		{
-			message = new DBMessage(param.getUser(), param.getCategory(), param.getHeadline(), param.getContent());
+			message = new DBMessage(new DBUser(),new DBCategory(), param.getHeadline(), param.getContent());
 			this.entityManager.persist(message);
 		}
 		catch(EntityExistsException ex)

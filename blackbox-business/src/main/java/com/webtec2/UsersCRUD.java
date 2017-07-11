@@ -26,6 +26,15 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.UUID;
 import java.util.HashMap;
+import com.webtec2.auth.permission.FirstMessageItemPermission;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authz.Permission;
+import org.apache.shiro.authz.annotation.RequiresAuthentication;
+import org.apache.shiro.authz.annotation.RequiresRoles;
+import org.apache.shiro.subject.Subject;
+import org.apache.shiro.session.Session;
+import org.apache.shiro.authc.UnknownAccountException;
+import org.apache.shiro.authc.UsernamePasswordToken;
 
 @Path("/persons")
 @Transactional
@@ -229,24 +238,43 @@ public class UsersCRUD implements CRUDInterface<DBUser> {
 	@POST
 	@Consumes(MediaType.TEXT_PLAIN)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response login(final DBUser param) {		
-		DBUser user = null;
-		try
-		{
-			user =  this.entityManager.find(DBUser.class, param.getId());
-		}
-		catch(IllegalArgumentException ex)
-		{
-			//if the first argument does not denote an entity type or the second argument is is not a valid type for that entity primary key or is null
-			return Response.status(Status.BAD_REQUEST).build();
-		}
-		if(user.getPassword().equals(param.getPassword()))
-		{			
-			UUID uuid = UUID.randomUUID();
-			return Response.ok(uuid).build();
-		}
+	public Response login(final String username, final String password, final boolean rememberMe) {
+		Subject currentUser = SecurityUtils.getSubject();
 		
-		return Response.status(Status.BAD_REQUEST).build();
+		Session session = currentUser.getSession();
+		session.setAttribute("key", "value");
+		if(!currentUser.isAuthenticated())
+		{
+			UsernamePasswordToken token = new UsernamePasswordToken(username, password);
+			token.setRememberMe(rememberMe);
+			
+			try
+			{
+				currentUser.login(token);
+				
+			}
+			catch(UnknownAccountException uae) 
+			{
+				return Response.status(Status.BAD_REQUEST).build();
+			}
+		}	
+		return Response.ok(currentUser).build();		
+	}
+	
+	@Path("/logout")
+	@POST
+	@Consumes(MediaType.TEXT_PLAIN)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response login() {
+		Subject currentUser = SecurityUtils.getSubject();
+		
+		Session session = currentUser.getSession();
+		session.setAttribute("key", "value");
+		if(currentUser.isAuthenticated())
+		{
+			currentUser.logout();
+		}	
+		return Response.ok(currentUser).build();		
 	}
 
 }

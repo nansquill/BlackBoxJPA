@@ -1,22 +1,20 @@
-<div>
-    <h3>Login</h3>
-    <form *ngIf="!isLoggedIn()">
-        <dl>
-            <dt>
-                <label for="username">Username</label>
-            </dt>
-            <dd>
-                <input [(ngModel)]="username" id="username" type="text" required>
-            </dd>
-            <dt>
-                <label for="password">Password</label>
-            </dt>
-            <dd>
-                <input [(ngModel)]="password" id="password" type="password" required>
-            </dd>
-        </dl>
-        <button type="submit" (click)="login($event)">Login</button>
-    </form>
-
-    <button *ngIf="isLoggedIn()" type="submit" (click)="logout($event)">Logout</button>
+<div class="navbar-collapse collapse">
+	<form *ngIf="!isLoggedIn()" name="loginForm" class="navbar-form navbar-right" role="form">
+		<div class="form-group" ng-class="{'has-error' : errauthc}">
+			<input type="text" placeholder="Username" class="form-control" [(ngModel)]="username" required>
+		</div>
+		<div class="form-group" ng-class="{'has-error' : errauthc}">
+			<input type="password" placeholder="Password" class="form-control" [(ngModel)]="password" required>
+		</div>
+		<div class="form-group">
+			<input type="checkbox" ng-model="token.rememberMe"> <span>Remember Me</span>
+		</div>
+		<button type="submit" (click)="login($event)" class="btn btn-success" ng-disabled="loginForm.$pristine || loginForm.$invalid">
+			<span class="glyphicon glyphicon-log-in"></span> Log in
+		</button>
+	</form>
+	<form class="navbar-form navbar-right" role="form">
+		<button *ngIf="isLoggedIn()" type="submit" (click)="logout($event)" class="btn btn-danger">Logout</button>
+	</form>
+	
 </div>

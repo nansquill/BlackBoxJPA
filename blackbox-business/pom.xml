@@ -67,8 +67,7 @@
 			<artifactId>blackbox-persistence</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-		
-		
+
 		<dependency>
 			<groupId>org.apache.shiro</groupId>
 			<artifactId>shiro-core</artifactId>
@@ -83,24 +82,6 @@
 			<groupId>org.apache.shiro</groupId>
 			<artifactId>shiro-aspectj</artifactId>
 			<version>${shiro.version}</version>
-		</dependency>
-
-		<dependency>
-			<groupId>org.wildfly.swarm</groupId>
-			<artifactId>ejb</artifactId>
-			<version>${wildfly-swarm.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.wildfly.swarm</groupId>
-			<artifactId>jaxrs-cdi</artifactId>
-			<version>${wildfly-swarm.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.wildfly.swarm</groupId>
-			<artifactId>jaxrs-jaxb</artifactId>
-			<version>${wildfly-swarm.version}</version>
-		</dependency>
-		
+		</dependency>		
 	</dependencies>
-
 </project>

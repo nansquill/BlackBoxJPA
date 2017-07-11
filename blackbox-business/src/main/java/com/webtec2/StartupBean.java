@@ -12,6 +12,16 @@ import com.webtec2.DBMessage;
 import java.util.UUID;
 import java.util.HashMap;
 
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authz.Permission;
+import org.apache.shiro.authz.annotation.RequiresAuthentication;
+import org.apache.shiro.authz.annotation.RequiresRoles;
+import org.apache.shiro.subject.Subject;
+import org.apache.shiro.session.Session;
+import org.apache.shiro.authc.UnknownAccountException;
+import org.apache.shiro.authc.UsernamePasswordToken;
+
+
 @Singleton
 @Startup
 public class StartupBean {
@@ -26,9 +36,16 @@ public class StartupBean {
 		
 		if(firstMessageItem == null) {
 			//Create Administrator user
-			final DBUser user = new DBUser();
-			user.setUsername("MaX");
-			user.setPassword("1234");
+			DBUser user = new DBUser();
+			user.setUsername("user");
+			user.setPassword("user");
+			user.setIsAdmin(false);
+			
+			this.entityManager.persist(user);
+			
+			user = new DBUser();
+			user.setUsername("admin");
+			user.setPassword("admin");
 			user.setIsAdmin(true);
 			
 			this.entityManager.persist(user);
@@ -46,6 +63,9 @@ public class StartupBean {
 			msg.setHeadline("Information");
 			msg.setContent("Project has been successfully created!");
 			this.entityManager.persist(msg);
+
+			
+			
 		}		
 	}
 
