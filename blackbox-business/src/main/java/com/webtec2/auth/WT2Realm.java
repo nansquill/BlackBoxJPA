@@ -1,6 +1,6 @@
 package com.webtec2.auth;
 
-import com.webtec2.auth.permission.ReadMessageItemPermission;
+import com.webtec2.auth.permission.*;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
@@ -60,7 +60,7 @@ public class WT2Realm extends AuthorizingRealm implements Realm {
 
 			@Override
 			public Collection<Permission> getObjectPermissions() {
-				return Collections.singleton(new ReadMessageItemPermission());
+				return Collections.singleton(new ReadMessageItemPermission(principals.getPrimaryPrincipal().toString()));
 			}
 		};
 	}

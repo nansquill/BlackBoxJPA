@@ -1,5 +1,15 @@
 package com.webtec2;
 
+import com.webtec2.auth.permission.*;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authz.Permission;
+import org.apache.shiro.authz.annotation.RequiresAuthentication;
+import org.apache.shiro.authz.annotation.RequiresRoles;
+import org.apache.shiro.subject.Subject;
+import org.apache.shiro.session.Session;
+import org.apache.shiro.authc.UnknownAccountException;
+import org.apache.shiro.authc.UsernamePasswordToken;
+
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -32,20 +42,25 @@ public class CategoriesCRUD implements CRUDInterface<DBCategory>{
 	/**
 	 * API overview:
 	 *  / @GET -> read all category data
-	 *  /id @GET -> read data from category {id}
+	 *  /{name} @GET -> read data from category {name}
 	 *  / @POST -> create new category
-	 *  /create/{name}/{description} @GET -> create new category by data
 	 *  /delete @POST -> remove category
-	 *  /delete/{id} @GET -> remove category {id}
+	 *  /delete/{name} @GET -> remove category {name}
 	 *  /update @POST -> update category data
 	 */	
 
 	@PersistenceContext
 	private EntityManager entityManager;
 	
-	@GET 
+	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	public List<DBCategory> readAll()	{
+	public Response readAll()	{
+		final Subject subject = SecurityUtils.getSubject();
+		final Permission readCategoryItemPermission = new ReadCategoryItemPermission(subject.getPrincipal().toString());
+		if(!subject.isPermitted(readCategoryItemPermission))
+		{
+			return Response.status(Response.Status.UNAUTHORIZED).build();
+		}	
 		final CriteriaBuilder builder;
 		List<DBCategory> result = new ArrayList<DBCategory>();
 		try
@@ -64,66 +79,40 @@ public class CategoriesCRUD implements CRUDInterface<DBCategory>{
 		{			
 			//if the selection is a compound selection and more than one selection item has the same assigned alias
 		}
-		return result;	
+		return Response.ok(result).build();	
 	}
 	
-	@Path("/{id}")
+	@Path("/{name}")
 	@GET
 	@Consumes(MediaType.TEXT_PLAIN)
 	@Produces(MediaType.APPLICATION_JSON)
-	public DBCategory read(@PathParam("id") final long id) {
+	public Response read(@PathParam("id") final String name) {
+		final Subject subject = SecurityUtils.getSubject();
+		final Permission readCategoryItemPermission = new ReadCategoryItemPermission(subject.getPrincipal().toString());
+		if(!subject.isPermitted(readCategoryItemPermission))
+		{
+			return Response.status(Response.Status.UNAUTHORIZED).build();
+		}	
 		DBCategory category = null;
 		try
 		{
-			category =  this.entityManager.find(DBCategory.class, id);
+			category =  this.entityManager.find(DBCategory.class, name);
 		}
 		catch(IllegalArgumentException ex)
 		{
 			//if the first argument does not denote an entity type or the second argument is is not a valid type for that entity primary key or is null
 		}
-		return category;
-	}
-	
-	@Path("/create/{name}/{description}")
-	@GET
-	@Consumes(MediaType.TEXT_PLAIN)
-	@Produces(MediaType.APPLICATION_JSON)
-	public Response createByNameAndDescription(@PathParam("name") final String name, @PathParam("description") final String description) {
-		final DBCategory category;
-		try
-		{		
-			category = new DBCategory(name, description);
-			this.entityManager.persist(category);
-		}
-		catch(EntityExistsException ex)
-		{
-			//if the entity already exists.
-			return Response.status(Status.CONFLICT).build();
-		}
-		catch(IllegalArgumentException ex)
-		{
-			//if the instance is not an entity
-			return Response.status(Status.BAD_REQUEST).build();
-		}
-		catch(TransactionRequiredException ex)
-		{
-			//if invoked on a container-managed entity manager of type PersistenceContextType.TRANSACTION and there is no transaction
-			return Response.status(Status.INTERNAL_SERVER_ERROR).build();
-		}
 		return Response.ok(category).build();
-	}
+	}	
 	
-	
-	@Path("/create")
 	@POST
 	@Consumes(MediaType.TEXT_PLAIN)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response create(final DBCategory param) {
+	public Response create(final DBCategory param) {			
 		final DBCategory category;
 		try
 		{
-			category = new DBCategory(param.getName(), param.getDescription());
-			this.entityManager.persist(category);
+			category = new DBCategory(param.getName());
 		}
 		catch(EntityExistsException ex)
 		{
@@ -140,19 +129,27 @@ public class CategoriesCRUD implements CRUDInterface<DBCategory>{
 			//if invoked on a container-managed entity manager of type PersistenceContextType.TRANSACTION and there is no transaction
 			return Response.status(Status.INTERNAL_SERVER_ERROR).build();
 		}
+		final Subject subject = SecurityUtils.getSubject();
+		final Permission writeCategoryItemPermission = new WriteCategoryItemPermission(category, subject.getPrincipal().toString());
+		if(!subject.isPermitted(writeCategoryItemPermission))
+		{
+			return Response.status(Response.Status.UNAUTHORIZED).build();
+		}
+
+		this.entityManager.persist(category);
 		return Response.ok(category).build();		
 	}
 	
-	@Path("/delete/{id}")
+	
+	@Path("/delete/{name}")
 	@GET
 	@Consumes(MediaType.TEXT_PLAIN)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response deleteById(@PathParam("id") final long id) {
+	public Response deleteByName(@PathParam("name") final String name) {
 		DBCategory category = null;
 		try
 		{
-			category = this.entityManager.find(DBCategory.class, id);
-			this.entityManager.remove(category);
+			category = this.entityManager.find(DBCategory.class, name);
 		}
 		catch(IllegalArgumentException ex)
 		{
@@ -164,7 +161,14 @@ public class CategoriesCRUD implements CRUDInterface<DBCategory>{
 		{
 			//if invoked on a container-managed entity manager of type PersistenceContextType.TRANSACTION and there is no transaction
 			return Response.status(Status.INTERNAL_SERVER_ERROR).build();
+		}
+		final Subject subject = SecurityUtils.getSubject();
+		final Permission deleteCategoryItemPermission = new DeleteCategoryItemPermission(category, subject.getPrincipal().toString());
+		if(!subject.isPermitted(deleteCategoryItemPermission))
+		{
+			return Response.status(Response.Status.UNAUTHORIZED).build();
 		}		
+		this.entityManager.remove(category);
 		return Response.ok(category).build();	
 	}
 	
@@ -173,6 +177,12 @@ public class CategoriesCRUD implements CRUDInterface<DBCategory>{
 	@Consumes(MediaType.TEXT_PLAIN)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response delete(final DBCategory param) {
+		final Subject subject = SecurityUtils.getSubject();
+		final Permission deleteCategoryItemPermission = new DeleteCategoryItemPermission(param, subject.getPrincipal().toString());
+		if(!subject.isPermitted(deleteCategoryItemPermission))
+		{
+			return Response.status(Response.Status.UNAUTHORIZED).build();
+		}
 		try
 		{
 			this.entityManager.remove(param);
@@ -194,7 +204,13 @@ public class CategoriesCRUD implements CRUDInterface<DBCategory>{
 	@POST
 	@Consumes(MediaType.TEXT_PLAIN)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response update(final DBCategory param) {		
+	public Response update(final DBCategory param) {	
+		final Subject subject = SecurityUtils.getSubject();
+		final Permission writeCategoryItemPermission = new WriteCategoryItemPermission(param, subject.getPrincipal().toString());
+		if(!subject.isPermitted(writeCategoryItemPermission))
+		{
+			return Response.status(Response.Status.UNAUTHORIZED).build();
+		}
 		try
 		{
 			this.entityManager.refresh(param);

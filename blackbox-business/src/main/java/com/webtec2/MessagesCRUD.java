@@ -1,6 +1,6 @@
 package com.webtec2;
 
-import com.webtec2.auth.permission.FirstMessageItemPermission;
+import com.webtec2.auth.permission.*;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authz.Permission;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
@@ -51,6 +51,7 @@ public class MessagesCRUD implements CRUDInterface<DBMessage> {
 	 *  /delete @POST -> remove message
 	 *  /delete/{id} @GET -> remove message {id}
 	 *  /update @POST -> update message data
+	 *  /newest @GET -> read newest message data
 	 */	
 
 	@PersistenceContext
@@ -58,7 +59,7 @@ public class MessagesCRUD implements CRUDInterface<DBMessage> {
 	
 	@GET 
 	@Produces(MediaType.APPLICATION_JSON)
-	public List<DBMessage> readAll()	{
+	public Response readAll()	{	
 		final CriteriaBuilder builder;
 		List<DBMessage> result = new ArrayList<DBMessage>();		
 		try
@@ -77,39 +78,28 @@ public class MessagesCRUD implements CRUDInterface<DBMessage> {
 		{			
 			//if the selection is a compound selection and more than one selection item has the same assigned alias
 		}
-		return result;	
-	}
-	
-	@GET
-	@Path("/newest")
-	@Produces(MediaType.APPLICATION_JSON)
-	public Response readNewestMessage() {
-		final CriteriaBuilder builder = this.entityManager.getCriteriaBuilder();
-		final CriteriaQuery<DBMessage> query = builder.createQuery(DBMessage.class);
-
-		final Root<DBMessage> from = query.from(DBMessage.class);
-
-		query.select(from);
-
-		final DBMessage result = this.entityManager.createQuery(query).setMaxResults(1).getSingleResult();
-
-		// Attribute based permission check using permissions
+		
+		//Read All should be permitted to everyone		
 		final Subject subject = SecurityUtils.getSubject();
-		final Permission firstMessageItemPermission = new FirstMessageItemPermission(result);
-
-		if (!subject.isPermitted(firstMessageItemPermission)) {
+		final Permission readMessageItemPermission = new ReadMessageItemPermission(subject.getPrincipal().toString());
+		if(!subject.isPermitted(readMessageItemPermission))
+		{
 			return Response.status(Response.Status.UNAUTHORIZED).build();
 		}
-
-		return Response.ok(result).build();
-	}
-	
+		return Response.ok(result).build();	
+	}	
 	
 	@Path("/{id}")
 	@GET
 	@Consumes(MediaType.TEXT_PLAIN)
 	@Produces(MediaType.APPLICATION_JSON)
-	public DBMessage read(@PathParam("id") final long id) {
+	public Response read(@PathParam("id") final long id) {
+		final Subject subject = SecurityUtils.getSubject();
+		final Permission readMessageItemPermission = new ReadMessageItemPermission(subject.getPrincipal().toString());
+		if(!subject.isPermitted(readMessageItemPermission))
+		{
+			return Response.status(Response.Status.UNAUTHORIZED).build();
+		}	
 		DBMessage message = null;		
 		try
 		{
@@ -119,53 +109,20 @@ public class MessagesCRUD implements CRUDInterface<DBMessage> {
 		{
 			//if the first argument does not denote an entity type or the second argument is is not a valid type for that entity primary key or is null
 		}
-		return message;
-	}
-
-	@Path("/create/{user_id}/{category_id}/{headline}/{content}")
-	@GET
-	@Consumes(MediaType.TEXT_PLAIN)
-	@Produces(MediaType.APPLICATION_JSON)
-	public Response createByUserAndCategoryAndHeadlineAndContent(@PathParam("user_id") final int user_id, @PathParam("category_id") final int category_id, 
-			@PathParam("headline") final String headline, @PathParam("content") final String content) {
-		final DBMessage message;
-		try
-		{
-			final DBUser user = this.entityManager.find(DBUser.class, user_id);
-			final DBCategory category = this.entityManager.find(DBCategory.class, category_id);		
-			message = new DBMessage(user, category, headline, content);
-			this.entityManager.persist(message);
-		}
-		catch(EntityExistsException ex)
-		{
-			//if the entity already exists.
-			return Response.status(Status.CONFLICT).build();
-		}
-		catch(IllegalArgumentException ex)
-		{
-			//if the instance is not an entity
-			return Response.status(Status.BAD_REQUEST).build();
-		}
-		catch(TransactionRequiredException ex)
-		{
-			//if invoked on a container-managed entity manager of type PersistenceContextType.TRANSACTION and there is no transaction
-			return Response.status(Status.INTERNAL_SERVER_ERROR).build();
-		}
+		//Read should be permitted to everyone
 		return Response.ok(message).build();
 	}
 	
-	
-	@Path("/create")
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	@RequiresAuthentication
-	public Response create(final DBMessage param) {
+	public Response create(final DBMessage param) {		
 		final DBMessage message;
 		try
 		{
-			message = new DBMessage(new DBUser(),new DBCategory(), param.getHeadline(), param.getContent());
-			this.entityManager.persist(message);
+			message = new DBMessage(param.getUser() , param.getCategory(), param.getHeadline(), param.getContent());
+			
 		}
 		catch(EntityExistsException ex)
 		{
@@ -182,6 +139,16 @@ public class MessagesCRUD implements CRUDInterface<DBMessage> {
 			//if invoked on a container-managed entity manager of type PersistenceContextType.TRANSACTION and there is no transaction
 			return Response.status(Status.INTERNAL_SERVER_ERROR).build();
 		}
+		
+		//Permission denied if not registered or not allowed
+		final Subject subject = SecurityUtils.getSubject();
+		final Permission writeMessageItemPermission = new WriteMessageItemPermission(message, subject.getPrincipal().toString());
+		if(!subject.isPermitted(writeMessageItemPermission))
+		{
+			return Response.status(Response.Status.UNAUTHORIZED).build();
+		}				
+		this.entityManager.remove(message);	
+		this.entityManager.persist(message);
 		return Response.ok(message).build();		
 	}
 	
@@ -193,8 +160,7 @@ public class MessagesCRUD implements CRUDInterface<DBMessage> {
 		DBMessage message = null;
 		try
 		{
-			message = this.entityManager.find(DBMessage.class, id);
-			this.entityManager.remove(message);
+			message = this.entityManager.find(DBMessage.class, id);			
 		}
 		catch(IllegalArgumentException ex)
 		{
@@ -207,7 +173,16 @@ public class MessagesCRUD implements CRUDInterface<DBMessage> {
 			//if invoked on a container-managed entity manager of type PersistenceContextType.TRANSACTION and there is no transaction
 			return Response.status(Status.INTERNAL_SERVER_ERROR).build();
 		}		
-		return Response.ok(message).build();	
+		
+		//Permitted, if user owns this message or is admin
+		final Subject subject = SecurityUtils.getSubject();
+		final Permission deleteMessageItemPermission = new DeleteMessageItemPermission(message, subject.getPrincipal().toString());
+		if(!subject.isPermitted(deleteMessageItemPermission))
+		{
+			return Response.status(Response.Status.UNAUTHORIZED).build();
+		}				
+		this.entityManager.remove(message);	
+		return Response.ok(message).build();
 	}
 	
 	@Path("/delete")
@@ -215,6 +190,14 @@ public class MessagesCRUD implements CRUDInterface<DBMessage> {
 	@Consumes(MediaType.TEXT_PLAIN)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response delete(final DBMessage param) {
+		//Permitted, if user owns this message or is admin
+		final Subject subject = SecurityUtils.getSubject();
+		final Permission deleteMessageItemPermission = new DeleteMessageItemPermission(param, subject.getPrincipal().toString());
+		if(!subject.isPermitted(deleteMessageItemPermission))
+		{
+			return Response.status(Response.Status.UNAUTHORIZED).build();
+		}				
+		
 		try
 		{
 			this.entityManager.remove(param);
@@ -236,7 +219,14 @@ public class MessagesCRUD implements CRUDInterface<DBMessage> {
 	@POST
 	@Consumes(MediaType.TEXT_PLAIN)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response update(final DBMessage param) {		
+	public Response update(final DBMessage param) {	
+		final Subject subject = SecurityUtils.getSubject();
+		final Permission writeMessageItemPermission = new WriteMessageItemPermission(param, subject.getPrincipal().toString());
+		if(!subject.isPermitted(writeMessageItemPermission))
+		{
+			return Response.status(Response.Status.UNAUTHORIZED).build();
+		}							
+		
 		try
 		{
 			this.entityManager.refresh(param);
@@ -258,5 +248,5 @@ public class MessagesCRUD implements CRUDInterface<DBMessage> {
 		}
 		
 		return Response.ok(param).build();	
-	}
+	}	
 }

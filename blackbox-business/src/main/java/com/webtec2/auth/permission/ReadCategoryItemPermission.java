@@ -1,13 +1,13 @@
 package com.webtec2.auth.permission;
 
 import org.apache.shiro.authz.Permission;
-import com.webtec2.DBMessage;
+import com.webtec2.DBCategory;
 
-public class ReadMessageItemPermission implements Permission {
+public class ReadCategoryItemPermission implements Permission {
 
 	private final String username;
 
-	public ReadMessageItemPermission(final String username) {
+	public ReadCategoryItemPermission(final String username) {
 		this.username = username;
 	}
 	@Override
