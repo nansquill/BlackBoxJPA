@@ -11,6 +11,8 @@ import 'package:blackbox/components/create/create_component.dart';
 import 'package:blackbox/components/login/login_component.dart';
 import 'package:blackbox/components/register/register_user_component.dart';
 
+import 'components/box/box_service.dart';
+
 @Component(
     selector: 'my-app',
     directives: const [ROUTER_DIRECTIVES, ShowNewest,CreateMessages,RegisterUser,LoginComponents],
@@ -27,5 +29,14 @@ import 'package:blackbox/components/register/register_user_component.dart';
 )
 
 class AppComponent {
-  var name = 'Angular';
+  final Router router;
+  final BoxService boxService;
+
+  AppComponent(this.router, this.boxService);
+
+  Future<Null> getBoxes() async {
+    heroes = await _heroService.getBoxes();
+  }
+
+
 }

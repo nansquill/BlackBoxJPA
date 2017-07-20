@@ -21,7 +21,16 @@ class BoxService {
     }
   }
 
-  dynamic _extractData(Response resp) => JSON.decode(resp.body)['data'];
+  Future<List<Box>> getBoxes() async {
+    try {
+      final response = await _http.get(_boxUrl);
+      return new Box.fromJson(_extractData(response));
+    } catch(e) {
+      throw _handleError(e);
+    }
+  }
+
+  dynamic _extractData(Response resp) => JSON.decode(resp.body);
 
   Exception _handleError(dynamic e) {
     return new Exception('Server error; cause: $e');
