@@ -2,6 +2,7 @@
 // is governed by a BSD-style license that can be found in the LICENSE file.
 
 import 'components/box/box_component.dart';
+import 'dart:async';
 import 'package:angular2/core.dart';
 import 'package:angular2/angular2.dart';
 import 'package:angular2/router.dart';
@@ -12,6 +13,7 @@ import 'package:blackbox/components/login/login_component.dart';
 import 'package:blackbox/components/register/register_user_component.dart';
 
 import 'components/box/box_service.dart';
+import 'package:blackbox/models/box.dart';
 
 @Component(
     selector: 'my-app',
@@ -28,15 +30,19 @@ import 'components/box/box_service.dart';
   ]
 )
 
-class AppComponent {
+class AppComponent implements OnInit {
   final Router router;
   final BoxService boxService;
+
+  List<Box> boxes;
 
   AppComponent(this.router, this.boxService);
 
   Future<Null> getBoxes() async {
-    heroes = await _heroService.getBoxes();
+    this.boxes = await boxService.getBoxes();
   }
 
-
+  ngOnInit() {
+    getBoxes();
+  }
 }
