@@ -12,10 +12,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 @XmlRootElement
 public class DBCategory {
 	
-}
 	private String name;
-
-	public DBCategory() { }
 	
 	public DBCategory(String name)
 	{
