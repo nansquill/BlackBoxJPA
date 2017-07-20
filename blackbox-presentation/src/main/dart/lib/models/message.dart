@@ -7,13 +7,12 @@ class Message {
 
   Message(this.content, this.headline, this.publishedOn);
 
-  factory Message.fromJson(Map<String, dynamic> msg) => new Message(msg['content'], msg['headline'], msg['published_on']);
+  factory Message.fromJson(Map<String, dynamic> msg) => new Message(msg['content'], msg['headline']);
 
   String toJSON() {
     return JSON.encode({
       'content':content,
-      'headline':headline,
-      'published_on': publishedOn
+      'headline':headline
     });
   }
 
