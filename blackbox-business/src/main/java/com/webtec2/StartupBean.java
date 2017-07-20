@@ -41,9 +41,10 @@ public class StartupBean {
 			this.entityManager.persist(new DBCategory("Tausche"));
 			this.entityManager.persist(new DBCategory("Suche"));
 			this.entityManager.persist(new DBCategory("Informiere"));
-			
+
 			//Create 3 users			
 			DBMessage message = new DBMessage("admin", this.entityManager.find(DBCategory.class, "Informiere"), "Willkommen", "Die Applikation ist erfolgreich gestartet.");
+			this.entityManager.persist(message);
 		}		
 	}
 

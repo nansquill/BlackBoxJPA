@@ -35,7 +35,7 @@ import java.util.ArrayList;
 
 @Path("/types")
 @Transactional
-public class CategoriesCRUD implements CRUDInterface<DBCategory>{
+public class CategoriesCRUD {
 	
 	/**
 	 * API overview:
@@ -82,40 +82,37 @@ public class CategoriesCRUD implements CRUDInterface<DBCategory>{
 		}
 		return Response.ok(result).build();	
 	}
-	
+
+
 	@Path("/{name}")
 	@GET
-	@Consumes(MediaType.TEXT_PLAIN)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response read(@PathParam("name") final String name) {
-		final Subject subject = SecurityUtils.getSubject();
-		final Permission readCategoryItemPermission = new ReadCategoryItemPermission(subject.getPrincipal().toString());
-		try{subject.checkPermission("ReadCategoryItemPermission");}
-		catch(AuthorizationException ex){
-			System.out.println("Error ReadCategoryItemPermission not given");
-			return Response.status(Response.Status.UNAUTHORIZED).build();
-		}	
+	public DBCategory read(@PathParam("name") String name) {
 		DBCategory category = null;
 		try
 		{
 			category =  this.entityManager.find(DBCategory.class, name);
+			if (category == null) {
+				category = new DBCategory(name);
+				this.entityManager.persist(category);
+			}
 		}
 		catch(IllegalArgumentException ex)
 		{
 			//if the first argument does not denote an entity type or the second argument is is not a valid type for that entity primary key or is null
-			System.out.println("Error the first argument does not denote an entity type or the second argument is is not a valid type for that entity primary key or is null");
 		}
-		return Response.ok(category).build();
-	}	
-	
+		return category;
+	}
+
 	@POST
-	@Consumes(MediaType.TEXT_PLAIN)
+	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response create(final DBCategory param) {			
 		final DBCategory category;
 		try
 		{
 			category = new DBCategory(param.getName());
+
 		}
 		catch(EntityExistsException ex)
 		{
@@ -147,10 +144,9 @@ public class CategoriesCRUD implements CRUDInterface<DBCategory>{
 		return Response.ok(category).build();		
 	}
 	
-	
+
 	@Path("/delete/{name}")
 	@GET
-	@Consumes(MediaType.TEXT_PLAIN)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response deleteByName(@PathParam("name") final String name) {
 		DBCategory category = null;
@@ -192,7 +188,7 @@ public class CategoriesCRUD implements CRUDInterface<DBCategory>{
 	
 	@Path("/delete")
 	@POST
-	@Consumes(MediaType.TEXT_PLAIN)
+	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response delete(final DBCategory param) {
 		final Subject subject = SecurityUtils.getSubject();
@@ -223,7 +219,6 @@ public class CategoriesCRUD implements CRUDInterface<DBCategory>{
 	
 	@Path("/update")
 	@POST
-	@Consumes(MediaType.TEXT_PLAIN)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response update(final DBCategory param) {	
 		final Subject subject = SecurityUtils.getSubject();

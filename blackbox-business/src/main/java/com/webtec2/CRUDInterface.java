@@ -5,7 +5,7 @@ import java.util.List;
 
 
 public interface CRUDInterface<T> {
-    //Create new T -> Path: /create 
+    //Create new T -> Path: /create
     Response create(T t);
     //Read all T data -> Path: / 
     Response readAll();
@@ -14,7 +14,7 @@ public interface CRUDInterface<T> {
     //Update T data by obj -> Path: /update
     Response update(T t);
     //delete T obj -> Path: /delete
-    Response delete(T t);    
+    Response delete(T t);
     //delete T by id -> Path: /delete/{id}
     //Response deleteById(long id);
 }

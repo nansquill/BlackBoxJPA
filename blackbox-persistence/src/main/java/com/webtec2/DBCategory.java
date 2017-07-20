@@ -4,14 +4,15 @@ import java.util.*;
 import javax.persistence.*;
 import javax.xml.bind.annotation.XmlRootElement;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import java.util.Date;
 
 @Entity
 @Table(name="category", uniqueConstraints={
 	@UniqueConstraint(columnNames = "name")
 })
 @XmlRootElement
-public class DBCategory{
+public class DBCategory {
+	
+}
 	private String name;
 
 	public DBCategory() { }
@@ -20,7 +21,10 @@ public class DBCategory{
 	{
 		this.name = name;
 	}
-
+	
+	public DBCategory() {
+	}
+	
 	@Id
 	@Column(name = "name")
 	@JsonProperty(value="name")

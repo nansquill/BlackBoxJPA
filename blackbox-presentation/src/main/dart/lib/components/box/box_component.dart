@@ -27,5 +27,4 @@ class BoxComponent implements OnInit {
       box = await (_boxService.getBox(name));
     }
   }
-
 }
