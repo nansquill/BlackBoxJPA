@@ -1,4 +1,4 @@
-import '../../model/box.dart';
+import '../../models/box.dart';
 import 'package:angular2/angular2.dart';
 import 'dart:async';
 import 'dart:convert';

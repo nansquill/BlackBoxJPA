@@ -1,9 +1,6 @@
 package com.webtec2;
 
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Column;
-import javax.persistence.MappedSuperclass;
+import javax.persistence.*;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @MappedSuperclass

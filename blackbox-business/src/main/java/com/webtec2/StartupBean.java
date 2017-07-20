@@ -7,10 +7,20 @@ import javax.ejb.Startup;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.util.Date;
-import com.webtec2.DBUser;
 import com.webtec2.DBMessage;
+import com.webtec2.DBCategory;
 import java.util.UUID;
 import java.util.HashMap;
+
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authz.Permission;
+import org.apache.shiro.authz.annotation.RequiresAuthentication;
+import org.apache.shiro.authz.annotation.RequiresRoles;
+import org.apache.shiro.subject.Subject;
+import org.apache.shiro.session.Session;
+import org.apache.shiro.authc.UnknownAccountException;
+import org.apache.shiro.authc.UsernamePasswordToken;
+
 
 @Singleton
 @Startup
@@ -22,22 +32,25 @@ public class StartupBean {
 	@PostConstruct
 	public void startup() {
 		
-		final DBMessage firstMessageItem = this.entityManager.find(DBMessage.class, 1L);
+		DBCategory itemCategory = this.entityManager.find(DBCategory.class, "Verkaufe");
 		
-		if(firstMessageItem == null) {
-			//Create Administrator user
-			final DBUser user = new DBUser();
-			user.setUsername("MaX");
-			user.setPassword("1234");
-			user.setIsAdmin(true);
-			
-			this.entityManager.persist(user);
+		if(itemCategory == null)
+		{
+			//Standard categories
+			this.entityManager.persist(new DBCategory("Verkaufe"));
+			this.entityManager.persist(new DBCategory("Tausche"));
+			this.entityManager.persist(new DBCategory("Suche"));
+			this.entityManager.persist(new DBCategory("Informiere"));
 
+			//Create 3 users			
+			DBMessage message = new DBMessage("admin", this.entityManager.find(DBCategory.class, "Informiere"), "Willkommen", "Die Applikation ist erfolgreich gestartet.");
+			this.entityManager.persist(message);
 		}		
 	}
 
 	@PreDestroy
 	public void shutdown() {
 		// potential cleanup work
+		this.entityManager.clear();
 	}
 }

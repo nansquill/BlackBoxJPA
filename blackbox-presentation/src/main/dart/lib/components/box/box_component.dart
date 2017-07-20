@@ -1,4 +1,4 @@
-import '../../model/box.dart';
+import '../../models/box.dart';
 import 'box_service.dart';
 import 'dart:async';
 import 'package:angular2/angular2.dart';
@@ -27,5 +27,4 @@ class BoxComponent implements OnInit {
       box = await (_boxService.getBox(name));
     }
   }
-
 }

@@ -7,6 +7,7 @@ environment:
 
 dependencies:
   angular2: ^3.0.0
+  jsonx: "^2.0.2"
 
 dev_dependencies:
   angular_test: ^1.0.0-beta+2
@@ -28,7 +29,3 @@ transformers:
 - test/pub_serve:
     $include: test/**_test.dart
 - dart_to_js_script_rewriter
-
-web:
-  compiler:
-    debug: dartdevc

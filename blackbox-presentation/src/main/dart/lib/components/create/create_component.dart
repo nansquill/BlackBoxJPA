@@ -2,15 +2,18 @@
 
 import 'package:angular2/angular2.dart';
 import 'dart:html';
-import 'package:blackbox/model/message.dart';
+import 'package:blackbox/models/message.dart';
+import 'package:blackbox/models/box.dart';
 
 @Component(selector: 'create-message', templateUrl: 'create_component.html')
 class CreateMessages {
 
   Message model;
+  Box box;
 
-  CreateMessage(){
+  CreateMessages(){
     model = new Message();
+    box = new Box();
   }
 
   void postMessages(dynamic e){

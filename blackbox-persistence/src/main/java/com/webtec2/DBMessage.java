@@ -1,20 +1,11 @@
 package com.webtec2;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.UniqueConstraint;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
+import javax.persistence.*;
 import javax.xml.bind.annotation.XmlRootElement;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.Date;
 import com.webtec2.DBCategory;
-import com.webtec2.DBUser;
 
 @Entity
 @Table(name="message", uniqueConstraints={
@@ -24,7 +15,7 @@ import com.webtec2.DBUser;
 public class DBMessage extends DBIdentified {
 
 	private DBCategory category;
-	private DBUser user;
+	private String user;
 	private String headline;
 	private String content;
 	private Date publishedOn;
@@ -32,7 +23,7 @@ public class DBMessage extends DBIdentified {
 	
 	public DBMessage() { }
 
-	public DBMessage(DBUser user, DBCategory category, String headline, String content)
+	public DBMessage(String user, DBCategory category, String headline, String content)
 	{
 		this.user = user;
 		this.headline = headline;
@@ -53,14 +44,13 @@ public class DBMessage extends DBIdentified {
 		this.publishedOn = publishedOn;
 	}
 	
-	@ManyToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "user")
 	@JsonProperty(value="user")
-	public DBUser getUser()	{
+	public String getUser()	{
 		return user;
 	}
 	
-	public void setUser(DBUser user)	{
+	public void setUser(String user)	{
 		this.user = user;
 	}
 

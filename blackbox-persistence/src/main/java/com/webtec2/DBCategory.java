@@ -1,9 +1,9 @@
 package com.webtec2;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
+import java.util.*;
 import javax.persistence.*;
 import javax.xml.bind.annotation.XmlRootElement;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name="category", uniqueConstraints={
@@ -11,15 +11,17 @@ import javax.xml.bind.annotation.XmlRootElement;
 })
 @XmlRootElement
 public class DBCategory {
+	
 	private String name;
-
-	public DBCategory(String name) {
+	
+	public DBCategory(String name)
+	{
 		this.name = name;
 	}
-
+	
 	public DBCategory() {
 	}
-
+	
 	@Id
 	@Column(name = "name")
 	@JsonProperty(value="name")
@@ -30,7 +32,5 @@ public class DBCategory {
 	public void setName(String name) {
 		this.name = name;
 	}
-
-
 }
 
