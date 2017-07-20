@@ -1,11 +1,12 @@
 package com.webtec2.auth;
 
+import com.webtec2.DBMessage;
+import com.webtec2.DBCategory;
 import com.webtec2.auth.permission.*;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
-import org.apache.shiro.authz.AuthorizationInfo;
-import org.apache.shiro.authz.Permission;
+import org.apache.shiro.authz.*;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.realm.Realm;
 import org.apache.shiro.subject.PrincipalCollection;
@@ -14,9 +15,7 @@ import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.CDI;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Set;
+import java.util.*;
 
 public class WT2Realm extends AuthorizingRealm implements Realm {
 
@@ -52,15 +51,46 @@ public class WT2Realm extends AuthorizingRealm implements Realm {
 
 				return Collections.emptyList();
 			}
-
+			
 			@Override
 			public Collection<String> getStringPermissions() {
-				return Collections.emptyList();
+				if ("admin".equals(principals.getPrimaryPrincipal())) {
+			
+					String[] words = {"ReadMessageItemPermission",
+						"WriteMessageItemPermission",
+						"DeleteMessageItemPermission",
+						"ReadCategoryItemPermission",
+						"WriteCategoryItemPermission",
+						"DeleteCategoryItemPermission"};
+					return Arrays.asList(words);
+				}
+			
+				String[] words = {"ReadMessageItemPermission",
+					"WriteMessageItemPermission",
+					"DeleteMessageItemPermission",
+					"ReadCategoryItemPermission"};
+				return Arrays.asList(words);
+				
 			}
 
 			@Override
 			public Collection<Permission> getObjectPermissions() {
-				return Collections.singleton(new ReadMessageItemPermission(principals.getPrimaryPrincipal().toString()));
+				if ("admin".equals(principals.getPrimaryPrincipal())) {
+					return Arrays.asList(
+						new ReadMessageItemPermission(principals.getPrimaryPrincipal().toString()),
+						new WriteMessageItemPermission(new DBMessage(principals.getPrimaryPrincipal().toString(), new DBCategory("test"), "test", "test"), principals.getPrimaryPrincipal().toString()),
+						new DeleteMessageItemPermission(new DBMessage(principals.getPrimaryPrincipal().toString(), new DBCategory("test"), "test", "test"), principals.getPrimaryPrincipal().toString()),
+						new ReadCategoryItemPermission(principals.getPrimaryPrincipal().toString()),
+						new WriteCategoryItemPermission(new DBCategory(), principals.getPrimaryPrincipal().toString()),
+						new DeleteCategoryItemPermission(new DBCategory(), principals.getPrimaryPrincipal().toString())
+					);
+				}
+				return Arrays.asList(
+					new ReadMessageItemPermission(principals.getPrimaryPrincipal().toString()),
+					new WriteMessageItemPermission(new DBMessage(principals.getPrimaryPrincipal().toString(), new DBCategory("test"), "test", "test"), principals.getPrimaryPrincipal().toString()),
+					new DeleteMessageItemPermission(new DBMessage(principals.getPrimaryPrincipal().toString(), new DBCategory("test"), "test", "test"), principals.getPrimaryPrincipal().toString()),
+					new ReadCategoryItemPermission(principals.getPrimaryPrincipal().toString())
+				);
 			}
 		};
 	}

@@ -14,6 +14,7 @@
 		</button>
 	</form>
 	<form class="navbar-form navbar-right" role="form">
+		<button *ngIf="isLoggedIn()" type="submit" class="btn btn-primary">My messages</button>
 		<button *ngIf="isLoggedIn()" type="submit" (click)="logout($event)" class="btn btn-danger">Logout</button>
 	</form>
 	

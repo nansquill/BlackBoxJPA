@@ -44,7 +44,6 @@ public class DBMessage extends DBIdentified {
 		this.publishedOn = publishedOn;
 	}
 	
-	@ManyToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "user")
 	@JsonProperty(value="user")
 	public String getUser()	{

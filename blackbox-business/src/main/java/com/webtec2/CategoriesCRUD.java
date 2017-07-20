@@ -2,13 +2,11 @@ package com.webtec2;
 
 import com.webtec2.auth.permission.*;
 import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.authz.Permission;
-import org.apache.shiro.authz.annotation.RequiresAuthentication;
-import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.apache.shiro.subject.Subject;
 import org.apache.shiro.session.Session;
 import org.apache.shiro.authc.UnknownAccountException;
 import org.apache.shiro.authc.UsernamePasswordToken;
+import org.apache.shiro.authz.*;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -57,10 +55,11 @@ public class CategoriesCRUD implements CRUDInterface<DBCategory>{
 	public Response readAll()	{
 		final Subject subject = SecurityUtils.getSubject();
 		final Permission readCategoryItemPermission = new ReadCategoryItemPermission(subject.getPrincipal().toString());
-		if(!subject.isPermitted(readCategoryItemPermission))
-		{
+		try{subject.checkPermission("ReadCategoryItemPermission");}
+		catch(AuthorizationException ex){
+			System.out.println("Error ReadCategoryItemPermission not given");
 			return Response.status(Response.Status.UNAUTHORIZED).build();
-		}	
+		}
 		final CriteriaBuilder builder;
 		List<DBCategory> result = new ArrayList<DBCategory>();
 		try
@@ -74,10 +73,12 @@ public class CategoriesCRUD implements CRUDInterface<DBCategory>{
 		catch(IllegalStateException ex)
 		{
 			//if the entity manager has been closed
+			System.out.println("Error the entity manager has been closed");
 		}
 		catch(IllegalArgumentException ex)
 		{			
 			//if the selection is a compound selection and more than one selection item has the same assigned alias
+			System.out.println("Error the selection is a compound selection and more than one selection item has the same assigned alias");
 		}
 		return Response.ok(result).build();	
 	}
@@ -86,11 +87,12 @@ public class CategoriesCRUD implements CRUDInterface<DBCategory>{
 	@GET
 	@Consumes(MediaType.TEXT_PLAIN)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response read(@PathParam("id") final String name) {
+	public Response read(@PathParam("name") final String name) {
 		final Subject subject = SecurityUtils.getSubject();
 		final Permission readCategoryItemPermission = new ReadCategoryItemPermission(subject.getPrincipal().toString());
-		if(!subject.isPermitted(readCategoryItemPermission))
-		{
+		try{subject.checkPermission("ReadCategoryItemPermission");}
+		catch(AuthorizationException ex){
+			System.out.println("Error ReadCategoryItemPermission not given");
 			return Response.status(Response.Status.UNAUTHORIZED).build();
 		}	
 		DBCategory category = null;
@@ -101,6 +103,7 @@ public class CategoriesCRUD implements CRUDInterface<DBCategory>{
 		catch(IllegalArgumentException ex)
 		{
 			//if the first argument does not denote an entity type or the second argument is is not a valid type for that entity primary key or is null
+			System.out.println("Error the first argument does not denote an entity type or the second argument is is not a valid type for that entity primary key or is null");
 		}
 		return Response.ok(category).build();
 	}	
@@ -117,22 +120,26 @@ public class CategoriesCRUD implements CRUDInterface<DBCategory>{
 		catch(EntityExistsException ex)
 		{
 			//if the entity already exists.
+			System.out.println("Error the entity already exists.");
 			return Response.status(Status.CONFLICT).build();
 		}
 		catch(IllegalArgumentException ex)
 		{
 			//if the instance is not an entity
+			System.out.println("Error the instance is not an entity");
 			return Response.status(Status.BAD_REQUEST).build();
 		}
 		catch(TransactionRequiredException ex)
 		{
 			//if invoked on a container-managed entity manager of type PersistenceContextType.TRANSACTION and there is no transaction
+			System.out.println("Error invoked on a container-managed entity manager of type PersistenceContextType.TRANSACTION and there is no transaction");
 			return Response.status(Status.INTERNAL_SERVER_ERROR).build();
 		}
 		final Subject subject = SecurityUtils.getSubject();
 		final Permission writeCategoryItemPermission = new WriteCategoryItemPermission(category, subject.getPrincipal().toString());
-		if(!subject.isPermitted(writeCategoryItemPermission))
-		{
+		try{subject.checkPermission("WriteCategoryItemPermission");}
+		catch(AuthorizationException ex){
+			System.out.println("Error WriteCategoryItemPermission not given");
 			return Response.status(Response.Status.UNAUTHORIZED).build();
 		}
 
@@ -155,20 +162,31 @@ public class CategoriesCRUD implements CRUDInterface<DBCategory>{
 		{
 			//if the first argument does not denote an entity type or the second argument is is not a valid type for that entitys primary
 			//if instance is not an entity or is a removed entity
+			System.out.println("Error instance is not an entity or is a removed entity");
 			return Response.status(Status.BAD_REQUEST).build();
 		}
 		catch(TransactionRequiredException ex)
 		{
 			//if invoked on a container-managed entity manager of type PersistenceContextType.TRANSACTION and there is no transaction
+			System.out.println("Error invoked on a container-managed entity manager of type PersistenceContextType.TRANSACTION and there is no transaction");
 			return Response.status(Status.INTERNAL_SERVER_ERROR).build();
 		}
 		final Subject subject = SecurityUtils.getSubject();
 		final Permission deleteCategoryItemPermission = new DeleteCategoryItemPermission(category, subject.getPrincipal().toString());
-		if(!subject.isPermitted(deleteCategoryItemPermission))
-		{
+		try{subject.checkPermission("DeleteCategoryItemPermission");}
+		catch(AuthorizationException ex){
+			System.out.println("Error DeleteCategoryItemPermission not given");
 			return Response.status(Response.Status.UNAUTHORIZED).build();
-		}		
-		this.entityManager.remove(category);
+		}
+		try{this.entityManager.remove(category);}
+		catch(IllegalArgumentException ex) {
+			System.out.println("Error the instance is not an entity or is a detached entity");
+			return Response.status(Status.INTERNAL_SERVER_ERROR).build();			
+		}
+		catch(TransactionRequiredException ex) {
+			System.out.println("Error invoked on a container-managed entity manager of type PersistenceContextType.TRANSACTION and there is no transaction");
+			return Response.status(Status.INTERNAL_SERVER_ERROR).build();			
+		}
 		return Response.ok(category).build();	
 	}
 	
@@ -179,8 +197,9 @@ public class CategoriesCRUD implements CRUDInterface<DBCategory>{
 	public Response delete(final DBCategory param) {
 		final Subject subject = SecurityUtils.getSubject();
 		final Permission deleteCategoryItemPermission = new DeleteCategoryItemPermission(param, subject.getPrincipal().toString());
-		if(!subject.isPermitted(deleteCategoryItemPermission))
-		{
+		try{subject.checkPermission("DeleteCategoryItemPermission");}
+		catch(AuthorizationException ex){
+			System.out.println("Error DeleteCategoryItemPermission not given");
 			return Response.status(Response.Status.UNAUTHORIZED).build();
 		}
 		try
@@ -190,11 +209,13 @@ public class CategoriesCRUD implements CRUDInterface<DBCategory>{
 		catch(IllegalArgumentException ex)
 		{
 			//if instance is not an entity or is a removed entity
+			System.out.println("Error instance is not an entity or is a removed entity");
 			return Response.status(Status.BAD_REQUEST).build();
 		}
 		catch(TransactionRequiredException ex)
 		{
 			//if invoked on a container-managed entity manager of type PersistenceContextType.TRANSACTION and there is no transaction
+			System.out.println("Error invoked on a container-managed entity manager of type PersistenceContextType.TRANSACTION and there is no transaction");
 			return Response.status(Status.INTERNAL_SERVER_ERROR).build();
 		}		
 		return Response.ok(param).build();	
@@ -207,8 +228,9 @@ public class CategoriesCRUD implements CRUDInterface<DBCategory>{
 	public Response update(final DBCategory param) {	
 		final Subject subject = SecurityUtils.getSubject();
 		final Permission writeCategoryItemPermission = new WriteCategoryItemPermission(param, subject.getPrincipal().toString());
-		if(!subject.isPermitted(writeCategoryItemPermission))
-		{
+		try{subject.checkPermission("WriteCategoryItemPermission");}
+		catch(AuthorizationException ex){
+			System.out.println("Error WriteCategoryItemPermission not given");
 			return Response.status(Response.Status.UNAUTHORIZED).build();
 		}
 		try
@@ -218,16 +240,19 @@ public class CategoriesCRUD implements CRUDInterface<DBCategory>{
 		catch(EntityNotFoundException ex)
 		{
 			//if the entity no longer exists in the database
+			System.out.println("Error the entity no longer exists in the database");
 			return Response.status(Status.CONFLICT).build();
 		}
 		catch(IllegalArgumentException ex)
 		{
 			//if the instance is not an entity or the entity is not managed
+			System.out.println("Error the instance is not an entity or the entity is not managed");
 			return Response.status(Status.BAD_REQUEST).build();
 		}
 		catch(TransactionRequiredException ex)
 		{
 			//if invoked on a container-managed entity manager of type PersistenceContextType.TRANSACTION and there is no transaction
+			System.out.println("Error invoked on a container-managed entity manager of type PersistenceContextType.TRANSACTION and there is no transaction");
 			return Response.status(Status.INTERNAL_SERVER_ERROR).build();
 		}
 		
