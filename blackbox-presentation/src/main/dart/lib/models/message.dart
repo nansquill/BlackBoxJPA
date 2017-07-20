@@ -5,9 +5,6 @@ class Message {
   String headline;
   DateTime publishedOn;
 
-  Message(this.content, this.headline, this.publishedOn);
-
-  factory Message.fromJson(Map<String, dynamic> msg) => new Message(msg['content'], msg['headline']);
 
   String toJSON() {
     return JSON.encode({
