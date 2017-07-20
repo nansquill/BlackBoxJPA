@@ -22,9 +22,15 @@ class BoxService {
   }
 
   Future<List<Box>> getBoxes() async {
+
+    List<Box> boxes = new List();
     try {
       final response = await _http.get(_boxUrl);
-      return new Box.fromJson(_extractData(response));
+      for (var data in _extractData(response)) {
+        boxes.add(new Box.fromJson(data));
+      };
+
+      return boxes;
     } catch(e) {
       throw _handleError(e);
     }
