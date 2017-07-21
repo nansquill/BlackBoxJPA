@@ -1,6 +1,6 @@
 import 'Message.dart';
 
-final List<Messaeg> mockMessages = [
+final List<Messaeg> MockMessages = [
 	new Message(11, 'Mr. Nice', 'Verkaufe'),
 	new Message(12, 'Narco', 'Verkaufe'),
 	new Message(13, 'Bombasto', 'Verkaufe'),

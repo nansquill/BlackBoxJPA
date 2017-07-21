@@ -17,5 +17,5 @@ class CategoryService extends httpBc.BrowserClient {
 	}
 	
 	Future<Category> getCategory(String name) async =>
-		(await getCategories()).firstWhere((category) => category.name == name);
+		(await this.getCategories()).firstWhere((category) => category.name == name);
 }

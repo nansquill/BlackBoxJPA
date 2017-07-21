@@ -20,12 +20,7 @@ class CategoryComponent implements OnInit {
 	List<Category> categories;
 
 	CategoryComponent(this._catService, this._router);
-	
-	Future<Null> gotoMessage() => _router.navigate([
-		'Messages',
-		{}
-	]);
-	
+		
 	Future<Null> ngOnInit() async {
 		categories = (await _catService.getCategories()).toList();
 	}

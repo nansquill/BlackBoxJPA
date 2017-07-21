@@ -1,6 +1,6 @@
 import 'Category.dart';
 
-final List<Category> mockCategories = [
+final List<Category> MockCategories = [
 	new Category("Verkaufe"),
 	new Category("Suche"),
 	new Category("Tausche"),

@@ -18,13 +18,16 @@ class MessageService {
 	Future<Message> getMessage(int id) async =>
 		(await getMessages()).firstWhere((message) => message.id == id);
 		
-	Future<List<Message>> getMessageByCategory(Category category) async
+	Future<List<Message>> getMessagesByCategory(Category category) async
 	{
 		List<Message> messages = await getMessages();
 		List<Message> selected;
 		
+		
 		messages.forEach((message) {
-			if(message.category.name == category.name)
+			Category cat = message.category;
+			
+			if(cat.name == category.name)
 			{
 				selected.add(message);
 			}

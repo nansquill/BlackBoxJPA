@@ -12,50 +12,63 @@ import '../../services/message/MessageService.dart';
 	selector: 'messages', 
 	templateUrl:'MessageComponent.html',
 	styleUrls: const['MessageComponent.css'],
-	directives: const[CORE_DIRECTIVES],
+	directives: const [CORE_DIRECTIVES, ROUTER_DIRECTIVES],
+	providers: const [CategoryService, MessageService, ROUTER_PROVIDERS],
 	pipes: const[COMMON_PIPES]	
 )
 class MessageComponent implements OnInit {
-	final Router _router;
-	final MessageService _messageService;
+	final MessageService _msgService;
 	final CategoryService _catService;
+	final Router _router;
 	
-	List<Category> category;
-	Category selectedCategory;
-	
+	List<Category> categories;
 	List<Message> messages;
+	
+	Category selectedCategory;
 	Message selectedMessage;
 	
 	bool subscribeMe;
-	
-	MessageComponent(this._messageService, this._catService, this._router);
+	String title = "Messages";
+
+	MessageComponent(this._catService, this._msgService, this._router);	
 	
 	Future<Null> getMessages() async {
 		if(subscribeMe)
 		{
-			messages = await _messageService.getMessagesFromMe();
+			messages = (await this._msgService.getMessages()).toList();
 		}
 		else if(selectedCategory != null)
 		{
-			messages = await _messageService.getMessagesByCategory(selectedCategory);
+			messages = (await this._msgService.getMessagesByCategory(selectedCategory)).toList();
 		}
 		else
 		{
-			messages = await _messageService.getMessages();
+			messages = (await this._msgService.getMessages()).toList();
 		}
 	}
-	
-	
-	
+			
 	Future<Null> getCategories() async {
-		categories = await _catService.getCategories();
+		categories = (await _catService.getCategories()).toList();
 	}
 	
-	void ngOnInit() { getCategories(); getMessages(); subscribeMe = false;  }
+	Future<Null> ngOnInit() async {
+		getCategories();
+		subscribeMe = false;
+		selectedCategory = null;
+		selectedMessage = null;
+		getMessages();
+	}
 	
-	void onCategoryChange(Category category) { selectedCategory = category; subscribeMe = false; selectedMessage = null; getMessages(); }
+	Future<Null> onCategoryChange(Category category) async{ 
+		selectedCategory = category; 
+		subscribeMe = false; 
+		selectedMessage = null; 
+		getMessages();
+	}
 	
-	void onSelect(Message message) { selectedMessage = message;}
+	void onSelect(Message message) { 
+		selectedMessage = message;
+	}
 	
 	Future<Null> gotoDetail() => _router.navigate([
 		'MessageDetail',

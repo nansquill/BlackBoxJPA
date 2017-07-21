@@ -2,7 +2,7 @@ import 'package:angular2/angular2.dart';
 import 'dart:html';
 
 @Component(selector: 'login', templateUrl: 'login_component.html')
-class LoginComponents {
+class LoginComponent {
 
   String username;
   String password;

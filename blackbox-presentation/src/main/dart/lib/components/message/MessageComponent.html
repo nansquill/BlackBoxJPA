@@ -26,6 +26,6 @@
 	</li>
 </ul>
 <div *ngIf="selectedMessage != null">
-	<h2>{{ selectedMessage.name | uppercase }} is selected message</h2>
+	<h2>{{ selectedMessage.headline | uppercase }} is selected message</h2>
 	<button (click)="gotoDetail()">View Details</button>
 </div>
