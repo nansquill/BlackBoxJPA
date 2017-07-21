@@ -100,6 +100,7 @@ public class Register {
 	}
 	
 	@Path("/logout")
+	@GET
 	@POST
 	@Consumes(MediaType.TEXT_PLAIN)
 	@Produces(MediaType.APPLICATION_JSON)

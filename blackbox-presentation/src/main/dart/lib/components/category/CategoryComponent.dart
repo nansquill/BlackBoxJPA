@@ -24,4 +24,9 @@ class CategoryComponent implements OnInit {
 	Future<Null> ngOnInit() async {
 		categories = (await _catService.getCategories()).toList();
 	}
+	
+	Future<Null> gotoMessages() => _router.navigate([
+		'/Messages',
+		{}
+	]);
 }

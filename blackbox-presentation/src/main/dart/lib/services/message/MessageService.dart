@@ -1,12 +1,15 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:angular2/angular2.dart';
+import 'package:http/browser_client.dart' as httpBc;
 
 import '../../models/Message.dart';
 import '../../models/MockMessages.dart';
 
 @Injectable()
-class MessageService {
+class MessageService extends httpBc.BrowserClient {
+
 	Future<List<Message>> getMessages() async => MockMessages;
 	
 	Future<List<Message>> getMessagesSlowly() {
@@ -25,9 +28,8 @@ class MessageService {
 		
 		
 		messages.forEach((message) {
-			Category cat = message.category;
 			
-			if(cat.name == category.name)
+			if(message.category == category)
 			{
 				selected.add(message);
 			}

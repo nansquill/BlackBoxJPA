@@ -71,7 +71,7 @@ class MessageComponent implements OnInit {
 	}
 	
 	Future<Null> gotoDetail() => _router.navigate([
-		'MessageDetail',
+		'/MessageDetail',
 		{'id': selectedMessage.id.toString()}
 	]);
 }
