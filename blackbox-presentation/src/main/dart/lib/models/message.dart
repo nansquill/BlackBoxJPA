@@ -1,19 +1,9 @@
-import 'dart:convert';
+import 'package:blackbox/models/Category.dart';
+
 class Message {
-  int id;
-  String content;
-  String headline;
-  DateTime publishedOn;
-
-  Message(this.content, this.headline, this.publishedOn);
-
-  factory Message.fromJson(Map<String, dynamic> msg) => new Message(msg['content'], msg['headline']);
-
-  String toJSON() {
-    return JSON.encode({
-      'content':content,
-      'headline':headline
-    });
-  }
-
+	final int id;
+	String headline;
+	Category category;
+	
+	Message(this.id, this.headline, this.category);
 }

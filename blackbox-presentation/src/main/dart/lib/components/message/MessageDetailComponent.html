@@ -1,0 +1,15 @@
+<div *ngIf="message != null">
+	<h2>{{message.headline}} details!</h2>
+	<div>
+		<label>id: </label>{{message.id}}
+	</div>
+	<div>
+		<label>headline: </label>
+		<input [(ngModel)]="message.headline" placeholder="headline"/>
+	</div>
+	<div>
+		<label>category: </label>
+		<input [(ngModel)]="message.category.name" placeholder="category name"/>
+	</div>
+	<button (click)="goBack()">Back</button>
+</div>

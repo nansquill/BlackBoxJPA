@@ -1,0 +1,31 @@
+<h1>{{title}}</h1>
+
+<h3>Category</h3>
+<h3>
+	<select>
+		<option *ngFor="let category of categories"
+			[class.selected]="category == selectedCategory"
+			(click)="onCategoryChange(category)"
+			value="{{ category.name }}">
+			{{ category.name }}
+		</option>
+	</select>
+</h3>
+<h3>
+	<input type="checkbox" 
+		[(ngModel)]="subscribeMe"
+		name="subscribeMe">
+    <label for="subscribeMe">Show my messages only?</label>
+</h3>
+<h2>List of Messages</h2>
+<ul class="messages">
+	<li *ngFor="let message of messages"
+		[class.selected]="message == selectedMessage"
+		(click)="onSelect(message)">
+		<span class="badge">{{ message.id }}</span> {{ message.headline }}
+	</li>
+</ul>
+<div *ngIf="selectedMessage != null">
+	<h2>{{ selectedMessage.name | uppercase }} is selected message</h2>
+	<button (click)="gotoDetail()">View Details</button>
+</div>

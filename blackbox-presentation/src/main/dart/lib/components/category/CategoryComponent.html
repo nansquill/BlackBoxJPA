@@ -1,0 +1,10 @@
+<h3>Top Categories</h3>
+<div class="grid grid-pad">
+	<div *ngFor="let cat of categories" class="col-1-4">
+		<div class="module category">
+			<h4>{{ cat.name }}</h4>
+		</div>
+	</div>
+</div>
+<h3>Change to message view</h3>
+<button (click)="gotoMessage()">Go to messages</button>
