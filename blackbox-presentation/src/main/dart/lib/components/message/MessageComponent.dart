@@ -3,10 +3,10 @@ import 'dart:async';
 import 'package:angular2/angular2.dart';
 import 'package:angular2/router.dart';
 
-import 'package:blackbox/models/Category.dart';
-import 'package:blackbox/services/category/CategoryService.dart';
-import 'package:blackbox/models/Message.dart';
-import 'package:blackbox/services/message/MessageService.dart';
+import '../../models/Category.dart';
+import '../../services/category/CategoryService.dart';
+import '../../models/Message.dart';
+import '../../services/message/MessageService.dart';
 
 @Component(
 	selector: 'messages', 

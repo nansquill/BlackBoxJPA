@@ -1,11 +1,11 @@
 import 'package:angular2/angular2.dart';
 import 'package:angular2/router.dart';
 
-import 'package:blackbox/services/message/MessageService.dart';
-import 'package:blackbox/components/message/MessageComponent.dart';
-import 'package:blackbox/components/message/MessageDetailComponent.dart';
-import 'package:blackbox/services/category/CategoryService.dart';
-import 'package:blackbox/components/category/CategoryComponent.dart';
+import 'services/message/MessageService.dart';
+import 'components/message/MessageComponent.dart';
+import 'components/message/MessageDetailComponent.dart';
+import 'services/category/CategoryService.dart';
+import 'components/category/CategoryComponent.dart';
 
 
 @Component(

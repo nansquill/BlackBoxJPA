@@ -26,6 +26,7 @@ transformers:
     - 'package:angular2/common.dart#COMMON_PIPES'
     resolved_identifiers:
       Client: 'package:http/http.dart'
+      BrowserClient: 'package:http/browser_client.dart'
     entry_points: web/main.dart
 - angular2/transform/reflection_remover:
     $include: test/**_test.dart

@@ -2,8 +2,8 @@ import 'dart:async';
 
 import 'package:angular2/angular2.dart';
 
-import 'package:blackbox/models/Message.dart';
-import 'package:blackbox/models/MockMessages.dart';
+import '../../models/Message.dart';
+import '../../models/MockMessages.dart';
 
 @Injectable()
 class MessageService {

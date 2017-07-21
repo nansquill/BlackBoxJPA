@@ -1,12 +1,13 @@
 import 'dart:async';
 
 import 'package:angular2/angular2.dart';
+import 'package:http/browser_client.dart' as httpBc;
 
-import 'package:blackbox/models/Category.dart';
-import 'package:blackbox/models/MockCategories.dart';
+import '../../models/Category.dart';
+import '../../models/MockCategories.dart';
 
 @Injectable()
-class CategoryService {
+class CategoryService extends httpBc.BrowserClient {
 	Future<List<Category>> getCategories() async => MockCategories;
 	
 	Future<List<Category>> getCategoriesSlowly() {

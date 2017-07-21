@@ -1,4 +1,4 @@
-import 'package:blackbox/models/Category.dart';
+import 'Category.dart';
 
 class Message {
 	final int id;

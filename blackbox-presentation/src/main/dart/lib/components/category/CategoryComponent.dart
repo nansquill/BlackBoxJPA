@@ -3,8 +3,8 @@ import 'dart:async';
 import 'package:angular2/angular2.dart';
 import 'package:angular2/router.dart';
 
-import 'package:blackbox/models/Category.dart';
-import 'package:blackbox/services/CategoryService.dart';
+import '../../models/Category.dart';
+import '../../services/category/CategoryService.dart';
 
 @Component(
 	selector: 'categories',

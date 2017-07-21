@@ -4,8 +4,8 @@ import 'package:angular2/angular2.dart';
 import 'package:angular2/router.dart';
 import 'package:angular2/platform/common.dart';
 
-import 'package:blackbox/models/Message.dart';
-import 'package:blackbox/services/message/MessageService.dart';
+import '../../models/Message.dart';
+import '../../services/message/MessageService.dart';
 
 @Component(
 	selector: 'message-detail',
