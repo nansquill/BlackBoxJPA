@@ -14,7 +14,7 @@ class LoginComponent {
   void login(dynamic e){
     e.preventDefault();
     this.rememberMe = rememberMe;
-    HttpRequest.postFormData("../login.jsp", { "username" : username, "password" : password })
+    HttpRequest.postFormData("../login.jsp", { "username" : username, "password" : password },{requestHeaders )
       .then((request) {
       	loggedIn = true;
       	  HttpRequest.postFormData("/blackbox/rest/register/login", { "username" : username, "password" : password, "rememberMe": "true" })

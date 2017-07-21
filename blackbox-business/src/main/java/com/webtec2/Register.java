@@ -51,7 +51,7 @@ public class Register {
 	private EntityManager entityManager;
 	
 	@POST
-	@Consumes(MediaType.APPLICATION_JSON)
+	@Consumes("*/*")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response register(final String username, final String password) {
 		Subject currentUser = SecurityUtils.getSubject();		
@@ -77,7 +77,7 @@ public class Register {
 	
 	@Path("/login")
 	@POST
-	@Consumes(MediaType.APPLICATION_JSON)
+	@Consumes("*/*")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response login(final String username, final String password, final boolean rememberMe) {
 		Subject currentUser = SecurityUtils.getSubject();		
