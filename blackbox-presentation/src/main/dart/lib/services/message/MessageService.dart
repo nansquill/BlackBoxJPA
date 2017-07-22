@@ -9,8 +9,8 @@ import '../../models/MockMessages.dart';
 
 @Injectable()
 class MessageService{
-	static const _categoryUrl = 'rest/types'; 
-	static const _messageUrl = 'rest/messages'; //URL to web api
+	static const _categoryUrl = '../rest/types'; 
+	static const _messageUrl = '../rest/messages'; //URL to web api
 	static final _headers = {'Content-Type': 'application/json'};
 	final Client _http;
 	

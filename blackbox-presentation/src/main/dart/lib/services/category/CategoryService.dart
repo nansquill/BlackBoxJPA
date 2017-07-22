@@ -10,7 +10,7 @@ import '../../models/MockCategories.dart';
 @Injectable()
 class CategoryService{
 
-	static const _categoryUrl = 'rest/types'; //URL to web api
+	static const _categoryUrl = '../rest/types'; //URL to web api
 	static final _headers = {'Content-Type': 'application/json'};
 	final Client _http;
 	
