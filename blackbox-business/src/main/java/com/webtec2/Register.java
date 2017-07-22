@@ -10,7 +10,8 @@ import javax.persistence.EntityExistsException;
 import javax.persistence.EntityNotFoundException;
 import java.lang.IllegalStateException;
 import java.lang.IllegalArgumentException;
-import javax.persistence.TransactionRequiredException;
+import org.apache.shiro.crypto.*;
+import javax.persistence.*;
 import javax.transaction.Transactional;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -32,8 +33,8 @@ import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.apache.shiro.subject.Subject;
 import org.apache.shiro.session.Session;
-import org.apache.shiro.authc.UnknownAccountException;
-import org.apache.shiro.authc.UsernamePasswordToken;
+import org.apache.shiro.authc.*;
+import com.webtec2.DBUser;
 
 @Path("/register")
 @Transactional
@@ -50,69 +51,60 @@ public class Register {
 	@PersistenceContext
 	private EntityManager entityManager;
 	
-	@POST
-	@Consumes("*/*")
+	@Path("/{username}/{password}")
+	@GET
+	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response register(final String username, final String password) {
-		Subject currentUser = SecurityUtils.getSubject();		
-		Session session = currentUser.getSession();
-		session.setAttribute("key", "value");
-		if(currentUser.isAuthenticated())
-		{
-			return Response.status(Status.BAD_REQUEST).build();
-		}
-		UsernamePasswordToken token = new UsernamePasswordToken(username, password);
-		token.setRememberMe(true);			
-		try
-		{
-			currentUser.login(token);				
-		}
-		catch(UnknownAccountException uae) 
-		{
-			return Response.status(Status.BAD_REQUEST).build();
-		}
+	public Response read(@PathParam("username") final String username, @PathParam("password") final String password) {
+		DBUser user = new DBUser(username, password);
+		this.entityManager.persist(user);
 		
-		return Response.ok(currentUser).build();	
+		return Response.ok(user).build();
 	}
 	
-	@Path("/login")
-	@POST
-	@Consumes("*/*")
+	@Path("/login/{username}/{password}")
+	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response login(final String username, final String password, final boolean rememberMe) {
-		Subject currentUser = SecurityUtils.getSubject();		
-		Session session = currentUser.getSession();
-		session.setAttribute("key", "value");
+	public Response login(@PathParam("username") String username, @PathParam("password") String password) {
+		Subject currentUser = SecurityUtils.getSubject();
 		if(!currentUser.isAuthenticated())
 		{
 			UsernamePasswordToken token = new UsernamePasswordToken(username, password);
-			token.setRememberMe(rememberMe);			
+			token.setRememberMe(true);			
 			try
 			{
-				currentUser.login(token);				
+				currentUser.login(token);
+				System.out.println("User [" + currentUser.getPrincipal().toString() + "] has logged in");
+				currentUser.getSession().setAttribute("username", username);
+				return Response.ok(currentUser).build();	
 			}
 			catch(UnknownAccountException uae) 
 			{
+				System.out.println("Error: There is no user with username of " + token.getPrincipal());
 				return Response.status(Status.BAD_REQUEST).build();
 			}
+			catch(IncorrectCredentialsException ice)
+			{
+				System.out.println("Password for account " + token.getPrincipal() + " was incorrect!");
+				return Response.status(Status.BAD_REQUEST).build();
+			}
+			catch(LockedAccountException lae)
+			{
+				System.out.println("The account for username " + token.getPrincipal() + " is locked. Please contact admin.");
+				return Response.status(Status.BAD_REQUEST).build();
+			}	
 		}
-		return Response.ok(currentUser).build();		
+		System.out.println("User " + username + " is already logged in");
+		return Response.status(Status.BAD_REQUEST).build();		
 	}
 	
 	@Path("/logout")
 	@GET
 	@POST
-	@Consumes("*/*")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response logout() {
 		Subject currentUser = SecurityUtils.getSubject();
-		
-		Session session = currentUser.getSession();
-		session.setAttribute("key", "value");
-		if(currentUser.isAuthenticated())
-		{
-			currentUser.logout();
-		}	
+		currentUser.logout();
 		return Response.ok(currentUser).build();		
 	}
 

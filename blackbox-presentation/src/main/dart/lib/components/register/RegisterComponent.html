@@ -1,0 +1,29 @@
+<form *ngIf="!isRegistered()" name="registerForm" class="form-horizontal">
+	<fieldset>
+		<legend>Register</legend>
+		<div class="form-group" ng-class="{'has-error' : errauthc}">
+			<label class="col-lg-2 control-label" for="username">Username</label>
+			<div class="col-lg-10">
+				<input name="username" type="text" placeholder="Username" class="form-control" [(ngModel)]="username" required>
+			</div>
+		</div>
+		<div class="form-group" ng-class="{'has-error' : errauthc}">
+			<label class="col-lg-2 control-label" for="password">Password</label>
+			<div class="col-lg-10">
+				<input name="password" type="password" placeholder="Password" class="form-control" [(ngModel)]="password" required>
+			</div>
+		</div>
+		<div class="form-group" ng-class="{'has-error' : errauthc}">
+			<label class="col-lg-2 control-label" for="passwordCheck">Re-type Password</label>
+			<div class="col-lg-10">
+				<input name="passwordCheck" type="password" placeholder="Password" class="form-control" [(ngModel)]="passwordCheck" required>
+			</div>
+		</div>
+		<button type="submit" (click)="getRegister()" class="btn btn-success" ng-disabled="loginForm.$pristine || loginForm.$invalid || $passwordCheck != $password">
+			<span class="glyphicon glyphicon-register"></span> Register
+		</button>
+	</fieldset>
+</form>
+<div *ngIf="isRegistered()">
+	<h2>Your registration has been approved. Please log in now</h2>
+</div>

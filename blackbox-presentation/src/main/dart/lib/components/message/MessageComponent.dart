@@ -26,7 +26,7 @@ class MessageComponent implements OnInit {
 	
 	Category selectedCategory;
 	Message selectedMessage;
-	Message createMessage;
+	Message createMessage = new Message();
 	
 	bool subscribeMe;
 	String title = "Messages";
