@@ -26,6 +26,7 @@ class MessageComponent implements OnInit {
 	
 	Category selectedCategory;
 	Message selectedMessage;
+	Message createMessage;
 	
 	bool subscribeMe;
 	String title = "Messages";
@@ -39,7 +40,7 @@ class MessageComponent implements OnInit {
 		}
 		else if(selectedCategory != null)
 		{
-			messages = (await this._msgService.getMessagesByCategory(selectedCategory)).toList();
+			messages = (await this._msgService.getMessagesByCategory(selectedCategory.name)).toList();
 		}
 		else
 		{
@@ -56,10 +57,11 @@ class MessageComponent implements OnInit {
 		subscribeMe = false;
 		selectedCategory = null;
 		selectedMessage = null;
+		createMessage = null;
 		getMessages();
 	}
 	
-	Future<Null> onCategoryChange(Category category) async{ 
+	Future<Null> onCategoryChange(Category category) async{ 	
 		selectedCategory = category; 
 		subscribeMe = false; 
 		selectedMessage = null; 
@@ -68,6 +70,24 @@ class MessageComponent implements OnInit {
 	
 	void onSelect(Message message) { 
 		selectedMessage = message;
+	}
+	
+	Future<Null> add() async {
+		if(createMessage == null) return;
+		messages.add(await _msgService.create(createMessage));
+		createMessage = null;
+	}
+	
+	Future<Null> save() async {
+		await _msgService.update(selectedMessage);//then goback
+		selectedMessage = null;		
+	}
+	
+	Future<Null> delete(int id) async {
+		await _msgService.delete(selectedMessage.id);
+		messages.remove(selectedMessage);
+		if(selectedMessage.id == id)
+			selectedMessage = null;
 	}
 	
 	Future<Null> gotoDetail() => _router.navigate([

@@ -17,12 +17,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Order;
 import javax.persistence.criteria.Root;
 import javax.transaction.Transactional;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
@@ -47,17 +42,16 @@ public class MessagesCRUD implements CRUDInterface<DBMessage> {
 	 *  / @GET -> read all message data
 	 *  /id @GET -> read data from message {id}
 	 *  / @POST -> create new message
-	 *  /create/{message_id}/{category_id}/{headline}/{content} @GET -> create new message by data
-	 *  /delete @POST -> remove message
-	 *  /delete/{id} @GET -> remove message {id}
-	 *  /update @POST -> update message data
-	 *  /newest @GET -> read newest message data
+	 *  /delete @DELETE -> remove message
+	 *  /delete/{id} @DELETE -> remove message {id}
+	 *  /update @PUT -> update message data
 	 */	
 
 	@PersistenceContext
 	private EntityManager entityManager;
 	
 	@GET 
+	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response readAll()	{	
 		final CriteriaBuilder builder;
@@ -95,7 +89,7 @@ public class MessagesCRUD implements CRUDInterface<DBMessage> {
 	
 	@Path("/{id}")
 	@GET
-	@Consumes(MediaType.TEXT_PLAIN)
+	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response read(@PathParam("id") final long id) {
 		final Subject subject = SecurityUtils.getSubject();
@@ -162,8 +156,8 @@ public class MessagesCRUD implements CRUDInterface<DBMessage> {
 	}
 	
 	@Path("/delete/{id}")
-	@GET
-	@Consumes(MediaType.TEXT_PLAIN)
+	@DELETE
+	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response deleteById(@PathParam("id") final long id) {
 		DBMessage message = null;
@@ -206,8 +200,8 @@ public class MessagesCRUD implements CRUDInterface<DBMessage> {
 	}
 	
 	@Path("/delete")
-	@POST
-	@Consumes(MediaType.TEXT_PLAIN)
+	@DELETE
+	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response delete(final DBMessage param) {
 		//Permitted, if user owns this message or is admin
@@ -238,8 +232,8 @@ public class MessagesCRUD implements CRUDInterface<DBMessage> {
 	}	
 	
 	@Path("/update")
-	@POST
-	@Consumes(MediaType.TEXT_PLAIN)
+	@PUT
+	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response update(final DBMessage param) {	
 		final Subject subject = SecurityUtils.getSubject();

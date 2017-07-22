@@ -40,16 +40,17 @@ public class CategoriesCRUD {
 	 *  / @GET -> read all category data
 	 *  /id @GET -> read data from category {id}
 	 *  / @POST -> create new category
-	 *  /create/{name}/{description} @GET -> create new category by data
-	 *  /delete @POST -> remove category
-	 *  /delete/{id} @GET -> remove category {id}
-	 *  /update @POST -> update category data
+	 *  /{name}/messages -> get all messages of cat
+	 *  /delete @DELETE -> remove category
+	 *  /delete/{id} @DELETE -> remove category {id}
+	 *  /update @PUT -> update category data
 	 */	
 
 	@PersistenceContext
 	private EntityManager entityManager;
 	
 	@GET
+	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response readAll()	{
 		final Subject subject = SecurityUtils.getSubject();
@@ -82,28 +83,18 @@ public class CategoriesCRUD {
 		return Response.ok(result).build();
 	}
 
-	/*
-	@Path("/{id}")
-	@GET
-	@Produces(MediaType.APPLICATION_JSON)
-	public DBCategory read(@PathParam("id") final long id) {
-		DBCategory category = null;
-		try
-		{
-			category =  this.entityManager.find(DBCategory.class, id);
-		}
-		catch(IllegalArgumentException ex)
-		{
-			//if the first argument does not denote an entity type or the second argument is is not a valid type for that entity primary key or is null
-		}
-		return category;
-	}
-	 */
-
 	@Path("/{name}")
 	@GET
+	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public DBCategory read(@PathParam("name") String name) {
+	public Response read(@PathParam("name") String name) {
+		final Subject subject = SecurityUtils.getSubject();
+		final Permission readCategoryItemPermission = new ReadCategoryItemPermission(subject.getPrincipal().toString());
+		try{subject.checkPermission("ReadCategoryItemPermission");}
+		catch(AuthorizationException ex){
+			System.out.println("Error ReadCategoryItemPermission not given");
+			return Response.status(Response.Status.UNAUTHORIZED).build();
+		}
 		DBCategory category = null;
 		try
 		{
@@ -117,18 +108,39 @@ public class CategoriesCRUD {
 		{
 			//if the first argument does not denote an entity type or the second argument is is not a valid type for that entity primary key or is null
 		}
-		return category;
+		return Response.ok(category).build();
 	}
 
 	@Path("/{name}/messages")
 	@GET
+	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public List<DBMessage> getMessages(@PathParam("name") String name) {
-		DBCategory category = read(name);
+	public Response getMessages(@PathParam("name") String name) {
+		final Subject subject = SecurityUtils.getSubject();
+		final Permission readCategoryItemPermission = new ReadCategoryItemPermission(subject.getPrincipal().toString());
+		try{subject.checkPermission("ReadCategoryItemPermission");}
+		catch(AuthorizationException ex){
+			System.out.println("Error ReadCategoryItemPermission not given");
+			return Response.status(Response.Status.UNAUTHORIZED).build();
+		}
+		DBCategory category = null;
+		try
+		{
+			category =  this.entityManager.find(DBCategory.class, name);
+			if (category == null) {
+				category = new DBCategory(name);
+				this.entityManager.persist(category);
+			}
+		}
+		catch(IllegalArgumentException ex)
+		{
+			//if the first argument does not denote an entity type or the second argument is is not a valid type for that entity primary key or is null
+		}
 		Query query = this.entityManager.createQuery("SELECT m FROM DBMessage m JOIN m.category c WHERE c = :category");
 		query.setParameter("category", category);
 
-		return (List<DBMessage>) query.getResultList();
+		return Response.ok((List<DBMessage>) query.getResultList()).build();
+		//return (List<DBMessage>) query.getResultList();
 	}
 
 	@POST
@@ -173,7 +185,7 @@ public class CategoriesCRUD {
 	
 
 	@Path("/delete/{name}")
-	@GET
+	@DELETE
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response deleteByName(@PathParam("name") final String name) {
 		DBCategory category = null;
@@ -214,7 +226,7 @@ public class CategoriesCRUD {
 	}
 	
 	@Path("/delete")
-	@POST
+	@DELETE
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response delete(final DBCategory param) {
@@ -245,7 +257,8 @@ public class CategoriesCRUD {
 	}	
 	
 	@Path("/update")
-	@POST
+	@PUT
+	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response update(final DBCategory param) {
 		final Subject subject = SecurityUtils.getSubject();
