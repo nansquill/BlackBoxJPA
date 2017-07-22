@@ -19,6 +19,8 @@ class Message {
 	
 	factory Message.fromJson(Map<String, dynamic> msg) => 
 		new Message(_toInt(msg['id']), msg['user'], msg['category'], msg['headline'], msg['content'], msg['published_on']);
+		
+	
 	
 	Message(this.id, this.user, this.category, this.headline, this.content, this.publishedOn);
 }

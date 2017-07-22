@@ -1,18 +1,18 @@
 <div class="navbar-collapse collapse">
 	<form *ngIf="!isLoggedIn()" name="loginForm" class="navbar-form navbar-right" role="form">
 		<div class="form-group" ng-class="{'has-error' : errauthc}">
-			<label class="col-lg-2 control-label" for="username">Username</label>
-			<div class="col-lg-10">
+			<label class="hidden" for="username">Username</label>
+			<div class="">
 				<input name="username" type="text" placeholder="Username" class="form-control" [(ngModel)]="username" required>
 			</div>
 		</div>
 		<div class="form-group" ng-class="{'has-error' : errauthc}">
-			<label class="col-lg-2 control-label" for="password">Password</label>
-			<div class="col-lg-10">
+			<label class="hidden" for="password">Password</label>
+			<div class="">
 				<input name="password" type="password" placeholder="Password" class="form-control" [(ngModel)]="password" required>
 			</div>
 		</div>
-		<div class="form-group">
+		<div class="form-group hidden">
 			<div class="checkbox">
 				<label for="rememberMe">
 					<input type="checkbox" 
@@ -25,9 +25,9 @@
 			<span class="glyphicon glyphicon-log-in"></span> Log in
 		</button>
 	</form>
-	<form class="navbar-form navbar-right" role="form">
+	<form *ngIf="isLoggedIn()" class="navbar-form navbar-right" role="form">
 		<span>Welcome, {{ username }}</span>
-		<button *ngIf="isLoggedIn()" type="submit" (click)="getLogout()" class="btn btn-danger">Logout</button>
+		<button type="submit" (click)="getLogout()" class="btn btn-danger">Logout</button>
 	</form>
 	
 </div>

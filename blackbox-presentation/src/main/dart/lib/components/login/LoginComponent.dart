@@ -20,9 +20,10 @@ class LoginComponent {
 	bool rememberMe = true;	
 
 	Future<Null> getLogin() async {
+		
 		try	{
 			final url = '$_loginUrl';
-			final response = await _http.post(url, headers: _headers, body: {"username" : username, "password" : password});
+			final response = await _http.post(url, body: {"username" : username, "password" : password});
 			loggedIn = true; 
 		}
 		catch(e)	{
@@ -31,6 +32,7 @@ class LoginComponent {
 	}
 	
 	Future<Null> getLogout() async {
+		
 		try	{
 			final url = '$_logoutUrl';
 			final response = await _http.get(url);
@@ -58,4 +60,9 @@ class LoginComponent {
 			.then((request) {loggedIn = false; print(request.getAllResponseHeaders());})
 			.catchError((n)=>print(n));
     }
+    
+    Exception _handleError(dynamic e)	{
+		print(e);
+		return new Exception('Server error; cause: $e');
+	}
 }

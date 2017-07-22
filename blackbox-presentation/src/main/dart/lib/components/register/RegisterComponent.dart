@@ -21,7 +21,7 @@ class RegisterComponent {
 	
 	Future<Null> getRegister() async {
 		try	{
-			final response = await _http.post(_registerUrl, headers: _headers, body: {"username": username, "password" : password});
+			final response = await _http.post(_registerUrl, headers: _headers, body: JSON.encode({"username": username, "password" : password}));
 			registered = true;
 		}
 		catch(e)
@@ -31,4 +31,9 @@ class RegisterComponent {
 	}
 	
 	bool isRegistered() => registered;
+
+	Exception _handleError(dynamic e)	{
+		print(e);
+		return new Exception('Server error; cause: $e');
+	}
 }

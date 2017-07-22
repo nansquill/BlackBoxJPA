@@ -71,24 +71,6 @@ class CategoryService{
 		}
 	}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-	
-
 	Future<List<Category>> getCategoriesMock() async => MockCategories;
 			
 	dynamic _extractData(Response resp) => JSON.decode(resp.body);

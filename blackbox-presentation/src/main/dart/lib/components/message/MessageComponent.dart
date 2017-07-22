@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:core';
 
 import 'package:angular2/angular2.dart';
 import 'package:angular2/router.dart';
@@ -26,7 +27,7 @@ class MessageComponent implements OnInit {
 	
 	Category selectedCategory;
 	Message selectedMessage;
-	Message createMessage = new Message();
+	var createMessage;
 	
 	bool subscribeMe;
 	String title = "Messages";
@@ -57,7 +58,6 @@ class MessageComponent implements OnInit {
 		subscribeMe = false;
 		selectedCategory = null;
 		selectedMessage = null;
-		createMessage = null;
 		getMessages();
 	}
 	
@@ -71,12 +71,7 @@ class MessageComponent implements OnInit {
 	void onSelect(Message message) { 
 		selectedMessage = message;
 	}
-	
-	Future<Null> add() async {
-		if(createMessage == null) return;
-		messages.add(await _msgService.create(createMessage));
-		createMessage = null;
-	}
+
 	
 	Future<Null> save() async {
 		await _msgService.update(selectedMessage);//then goback

@@ -10,7 +10,6 @@ import javax.persistence.EntityExistsException;
 import javax.persistence.EntityNotFoundException;
 import java.lang.IllegalStateException;
 import java.lang.IllegalArgumentException;
-import org.apache.shiro.crypto.*;
 import javax.persistence.*;
 import javax.transaction.Transactional;
 import javax.ws.rs.Consumes;
@@ -59,7 +58,7 @@ public class Register {
 		DBUser user = new DBUser(username, password);
 		this.entityManager.persist(user);
 		
-		return Response.ok(user).build();
+		return login(username, password);
 	}
 	
 	@Path("/login/{username}/{password}")
@@ -74,23 +73,23 @@ public class Register {
 			try
 			{
 				currentUser.login(token);
-				System.out.println("User [" + currentUser.getPrincipal().toString() + "] has logged in");
+				System.out.println("User [" + username + "] has logged in");
 				currentUser.getSession().setAttribute("username", username);
 				return Response.ok(currentUser).build();	
 			}
 			catch(UnknownAccountException uae) 
 			{
-				System.out.println("Error: There is no user with username of " + token.getPrincipal());
+				System.out.println("Error: There is no user with username of " + username);
 				return Response.status(Status.BAD_REQUEST).build();
 			}
 			catch(IncorrectCredentialsException ice)
 			{
-				System.out.println("Password for account " + token.getPrincipal() + " was incorrect!");
+				System.out.println("Password for account " + username + " was incorrect!");
 				return Response.status(Status.BAD_REQUEST).build();
 			}
 			catch(LockedAccountException lae)
 			{
-				System.out.println("The account for username " + token.getPrincipal() + " is locked. Please contact admin.");
+				System.out.println("The account for username " + username + " is locked. Please contact admin.");
 				return Response.status(Status.BAD_REQUEST).build();
 			}	
 		}
@@ -104,7 +103,8 @@ public class Register {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response logout() {
 		Subject currentUser = SecurityUtils.getSubject();
-		currentUser.logout();
+		if(currentUser != null)
+			currentUser.logout();	
 		return Response.ok(currentUser).build();		
 	}
 

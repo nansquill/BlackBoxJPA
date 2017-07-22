@@ -118,10 +118,11 @@ public class MessagesCRUD implements CRUDInterface<DBMessage> {
 	@Produces(MediaType.APPLICATION_JSON)
 	@RequiresAuthentication
 	public Response create(final DBMessage param) {		
+		final Subject subject = SecurityUtils.getSubject();
 		final DBMessage message;
 		try
 		{
-			message = new DBMessage(param.getUser() , param.getCategory(), param.getHeadline(), param.getContent());
+			message = new DBMessage(subject.getPrincipal().toString(), param.getCategory(), param.getHeadline(), param.getContent());
 			
 		}
 		catch(EntityExistsException ex)
@@ -144,7 +145,6 @@ public class MessagesCRUD implements CRUDInterface<DBMessage> {
 		}
 		
 		//Permission denied if not registered or not allowed
-		final Subject subject = SecurityUtils.getSubject();
 		final Permission writeMessageItemPermission = new WriteMessageItemPermission(message, subject.getPrincipal().toString());
 		try{subject.checkPermission("WriteMessageItemPermission");}
 		catch(AuthorizationException ex){
