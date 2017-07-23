@@ -22,7 +22,8 @@ class MessageService{
 			final messages = _extractData(response)
 				.map((value) => new Message.fromJson(value))
 				.toList();
-			print("[Info] Received " + messages.length + " messages");
+			final lg = messages.length;
+			print("[Info] Received $lg messages");
 			return messages;
 		}
 		catch(e)	{
@@ -34,7 +35,7 @@ class MessageService{
 		try	{
 			final response = await _http.get('$_messageUrl/$id');
 			Message msg = new Message.fromJson(_extractData(response));
-			print("[Info] Received message " + msg.id);
+			print("[Info] Received message $id");
 			return msg;
 		}
 		catch(e)	{
@@ -48,7 +49,8 @@ class MessageService{
 			final response = 
 				await _http.put(url, headers:_headers, body: JSON.encode(message));
 			Message msg = new Message.fromJson(_extractData(response));
-			print("[Info] Update message " + msg.id);
+			final id = msg.id;
+			print("[Info] Update message $id");
 			return msg;
 		}
 		catch(e)	{
@@ -60,7 +62,8 @@ class MessageService{
 		try {
 			final response = await _http.post(_messageUrl, headers: _headers, body: JSON.encode(message));
 			Message msg = new Message.fromJson(_extractData(response));
-			print("[Info] Created message " + msg.id);
+			final id = msg.id;
+			print("[Info] Created message $id");
 			return msg;
 		}
 		catch(e)	{
@@ -70,9 +73,9 @@ class MessageService{
 	
 	Future<Message> delete(int id) async {
 		try	{
-			final url = '$_messageUrl/$id';
+			final url = '$_messageUrl/delete/$id';
 			await _http.delete(url, headers: _headers);
-			print("[Info] Deleted message " + id);
+			print("[Info] Deleted message $id");
 		}
 		catch(e)	{
 			throw _handleError(e);
@@ -82,11 +85,28 @@ class MessageService{
 	Future<List<Message>> getMessagesByCategory(String name) async {
 		try	{
 			final url = '$_categoryUrl/$name/messages';
-			await _http.get(url);
+			final response = await _http.get(url);
 			final messages = _extractData(response)
 				.map((value) => new Message.fromJson(value))
 				.toList();
-			print("[Info] Received " + messages.length + " messages with category " + name);
+			final lg = messages.length;
+			print("[Info] Received $lg messages with category $name");
+			return messages;
+		}
+		catch(e)	{
+			throw _handleError(e);
+		}
+	}
+	
+	Future<List<Message>> getOwnMessages() async {
+		try	{
+			final url = '$_messageUrl/own';
+			final response = await _http.get(url);
+			final messages = _extractData(response)
+				.map((value) => new Message.fromJson(value))
+				.toList();
+			final lg = messages.length;
+			print("[Info] Received $lg own messages");
 			return messages;
 		}
 		catch(e)	{

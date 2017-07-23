@@ -14,15 +14,18 @@ import '../../services/message/MessageService.dart';
 @Component(selector: 'create-message', templateUrl: 'CreateComponent.html')
 class CreateComponent {
 	final MessageService _msgService;
-	final Router _router;
+	final Router _router;	
 	
-	Message model;
+	String category;
+	String headline;
+	String content;
 	
 	CreateComponent(this._msgService, this._router);
 	
 	Future<Null> create() async
 	{
-		model = await this._msgService.create(model);
+		dynamic et = { "category" : category, "headline" : headline, "content" : content};
+		await this._msgService.create(et);
 	}
 	
 	void postMessages(dynamic e)

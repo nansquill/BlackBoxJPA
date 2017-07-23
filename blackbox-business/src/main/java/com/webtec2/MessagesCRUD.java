@@ -14,6 +14,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.Query;
 import javax.persistence.criteria.Order;
 import javax.persistence.criteria.Root;
 import javax.transaction.Transactional;
@@ -49,6 +50,28 @@ public class MessagesCRUD implements CRUDInterface<DBMessage> {
 
 	@PersistenceContext
 	private EntityManager entityManager;
+	
+	@Path("/own")
+	@GET
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getOwnMessages() {
+		final Subject subject = SecurityUtils.getSubject();
+		try{
+			subject.checkPermission("ReadMessageItemPermission");
+		}
+		catch(AuthorizationException ex){
+			System.out.println("[Error] User " + subject.getPrincipal() + " is not permitted to read message item");
+			System.out.println(ex);
+			return Response.status(Response.Status.UNAUTHORIZED).build();
+		}
+		Query query = this.entityManager.createQuery("SELECT m FROM DBMessage m WHERE m.user = :username");
+		query.setParameter("username", subject.getPrincipal().toString());
+		final List<DBMessage> result = query.getResultList();
+		
+		System.out.println("[Info] Found " + result.size() + " messages for user " + subject.getPrincipal().toString());
+		return Response.ok(result).build();
+	}
 	
 	@GET 
 	@Consumes(MediaType.APPLICATION_JSON)

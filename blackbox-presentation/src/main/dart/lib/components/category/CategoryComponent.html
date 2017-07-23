@@ -1,3 +1,4 @@
+<div class="col-lg-9">
 <div class="jumbotron">
 	<h1>Top categories</h1>
 	<div *ngFor="let cat of categories" class="panel panel-primary">
@@ -8,4 +9,11 @@
 	    	<button class="btn btn-primary" (click)="gotoMessages()">Go to {{ cat.name }}</button>
 		</div>
 	</div>
+</div>
+</div>
+<div class="col-lg-3">
+					<li class="active"><a [routerLink]="['CreateMessage']">Create</a></li>
+					<li class="active"><a [routerLink]="['Messages']">Show</a></li>
+					<li class="active"><a [routerLink]="['Categories']">Categories</a></li>
+					<li class="active"><a [routerLink]="['Register']">Register</a>
 </div>

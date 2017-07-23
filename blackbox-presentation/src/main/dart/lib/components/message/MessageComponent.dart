@@ -37,7 +37,7 @@ class MessageComponent implements OnInit {
 	Future<Null> getMessages() async {
 		if(subscribeMe)
 		{
-			messages = (await this._msgService.getMessages()).toList();
+			messages = (await this._msgService.getOwnMessages()).toList();
 		}
 		else if(selectedCategory != null)
 		{
@@ -61,9 +61,12 @@ class MessageComponent implements OnInit {
 		getMessages();
 	}
 	
+	Future<Null> onSubscribeClick() async {
+		getMessages();
+	} 
+	
 	Future<Null> onCategoryChange(Category category) async{ 	
 		selectedCategory = category; 
-		subscribeMe = false; 
 		selectedMessage = null; 
 		getMessages();
 	}
@@ -78,11 +81,10 @@ class MessageComponent implements OnInit {
 		selectedMessage = null;		
 	}
 	
-	Future<Null> delete(int id) async {
+	Future<Null> delete() async {
 		await _msgService.delete(selectedMessage.id);
 		messages.remove(selectedMessage);
-		if(selectedMessage.id == id)
-			selectedMessage = null;
+		selectedMessage = null;
 	}
 	
 	Future<Null> gotoDetail() => _router.navigate([

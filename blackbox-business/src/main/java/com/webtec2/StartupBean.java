@@ -45,7 +45,18 @@ public class StartupBean {
 			//Create 3 users			
 			DBMessage message = new DBMessage("admin", this.entityManager.find(DBCategory.class, "Informiere"), "Willkommen", "Die Applikation ist erfolgreich gestartet.");
 			this.entityManager.persist(message);
-			System.out.println("[Info] Successfully created 4 categories and 1 message");
+			message = new DBMessage("admin", this.entityManager.find(DBCategory.class, "Informiere"), "Willkommen", "Die Applikation ist erfolgreich gestartet.");
+			this.entityManager.persist(message);
+			message = new DBMessage("user", this.entityManager.find(DBCategory.class, "Informiere"), "Willkommen", "Die Applikation ist erfolgreich gestartet.");
+			this.entityManager.persist(message);
+			message = new DBMessage("admin", this.entityManager.find(DBCategory.class, "Verkaufe"), "Sonderpreis UBoot", "Nagelneu und aus raucherfreien Haushalt.");
+			this.entityManager.persist(message);
+			message = new DBMessage("admin", this.entityManager.find(DBCategory.class, "Suche"), "Pizza-Lieferant gesucht", "Fur kleines Geld grossen Hunger befriedigen.");
+			this.entityManager.persist(message);
+			message = new DBMessage("admin", this.entityManager.find(DBCategory.class, "Kaufe"), "Lotto-Schein", "Naturlich nur einen, der Geld bringt.");
+			this.entityManager.persist(message);
+			
+			System.out.println("[Info] Successfully created 4 categories and 5 message");
 		}		
 	}
 

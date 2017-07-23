@@ -1,4 +1,4 @@
-
+<div class="col-lg-9">
 <form class="form-horizontal">
 	<fieldset>
 		<legend>List of messages</legend>
@@ -18,23 +18,25 @@
 				<label for="subscribeMe">
 					<input type="checkbox" 
 					[(ngModel)]="subscribeMe"
+					(click)="onSubscribeClick()"
 					name="subscribeMe"> Show my messages only?
 				</label>
 			</div>
 		</div>
-		<h2>List of Messages</h2>
 		<div class="form-group">
 			<ul class="messages list-group">
 				<li *ngFor="let message of messages"
 					class="list-group-item"
 					[class.selected]="message == selectedMessage"
 					(click)="onSelect(message)">
-					<span class="badge">{{ message.headline }}</span> {{ message.content }}
+					<span class="badge">{{ message.category.name }}</span>{{ message.headline }}: {{ message.content }}
 				</li>
 			</ul>
 		</div>
 	</fieldset>
 </form>
+</div>
+<div class="col-lg-3">
 <form class="form-horizontal">
 	<fieldset>
 		<legend>{{ selectedMessage }}</legend>
@@ -83,10 +85,10 @@
 				</div>
 			</div>
 			<div class="form-group">
-				<button class="btn btn-primary" (click)="gotoDetail()">View Details</button>
 				<button class="btn btn-warning" (click)="save()">Save</button>
 				<button class="btn btn-danger" (click)="delete(); $event.stopPropagation()">Delete</button>
 			</div>
 		</div>
 	</fieldset>
 </form>
+</div>

@@ -21,7 +21,8 @@ import 'components/create/CreateComponent.dart';
 	const Route(path: '', name: 'CreateMessage', component: CreateComponent, useAsDefault: true),
 	const Route(path: '/messages', name: 'Messages', component: MessageComponent),
 	const Route(path: '/categories', name: 'Categories', component: CategoryComponent),
-	const Route(path: '/messages/:id', name: 'MessageDetail', component: MessageDetailComponent)
+	const Route(path: '/messages/:id', name: 'MessageDetail', component: MessageDetailComponent),
+	const Route(path: '/register', name: 'Register', component: RegisterComponent)
 ])
 
 class AppComponent	{

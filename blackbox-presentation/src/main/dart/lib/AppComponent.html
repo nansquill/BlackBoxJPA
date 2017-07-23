@@ -28,15 +28,15 @@
 			</div>
 			<div class="row">
 				<h1>{{ title }}</h1>
-				<div class="col-lg-9">
-					<ul class="nav nav-pills">
-						<li class="active"><a [routerLink]="['Messages']">Messages</a></li>
-						<li class="active"><a [routerLink]="['Categories']">Categories</a></li>
-					</ul>
+				
+				<ul class="nav nav-pills">
+					<li class="active"><a [routerLink]="['CreateMessage']">Create</a></li>
+					<li class="active"><a [routerLink]="['Messages']">Show</a></li>
+					<li class="active"><a [routerLink]="['Categories']">Categories</a></li>
+					<li class="active"><a [routerLink]="['Register']">Register</a>
+				</ul>
+				<div class="col-lg-12">
 					<router-outlet></router-outlet>
-				</div>
-				<div class="col-lg-3">
-					<register></register>
 				</div>
 				
 			</div>

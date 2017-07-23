@@ -22,7 +22,8 @@ class CategoryService{
 			final categories = _extractData(response)
 				.map((value) => new Category.fromJson(value))
 				.toList();
-			print("[Info] Received " + categories.length + " categories");
+			final lg = categories.length;
+			print("[Info] Received $lg categories");
 			return categories;
 		}
 		catch(e) {
@@ -34,7 +35,7 @@ class CategoryService{
 		try	{
 			final response = await _http.get('$_categoryUrl/$name');
 			Category cat = new Category.fromJson(_extractData(response));
-			print("[Info] Receive category " + cat.name);
+			print("[Info] Receive category $name");
 			return cat;
 		}
 		catch(e)	{
@@ -48,7 +49,8 @@ class CategoryService{
 			final response = 
 				await _http.put(url, headers:_headers, body: JSON.encode(category));
 			Category cat = new Category.fromJson(_extractData(response));
-			print("[Info] Updated category " + cat.name);
+			final name = cat.name;
+			print("[Info] Updated category $name");
 			return cat;
 		}
 		catch(e)	{
@@ -60,7 +62,8 @@ class CategoryService{
 		try	{
 			final response = await _http.post(_categoryUrl, headers: _headers, body: JSON.encode(category));
 			Category cat = new Category.fromJson(_extractData(response));
-			print("[Info] Created category " + cat.name);
+			final name = cat.name;
+			print("[Info] Created category $name");
 			return cat;
 		}
 		catch(e)	{
@@ -70,9 +73,9 @@ class CategoryService{
 	
 	Future<Category> delete(String name) async {
 		try {
-			final url = '$_categoryUrl/$name';
+			final url = '$_categoryUrl/delete/$name';
 			final Response = await _http.delete(url, headers: _headers);
-			print("[Info] Deleted category " + name);
+			print("[Info] Deleted category $name");
 		}
 		catch(e)	{
 			throw _handleError(e);
