@@ -18,6 +18,7 @@ Irina Solovyeva
 + Pic1: ![alt Pic1](https://raw.githubusercontent.com/nansquill/BlackBoxJPA/master/screen1.png)
 + Pic2: ![alt Pic2](https://raw.githubusercontent.com/nansquill/BlackBoxJPA/master/Screen2.png)
 + Pic3: ![alt Pic3](https://raw.githubusercontent.com/nansquill/BlackBoxJPA/master/Screen3.png)
++ Pic4: ![alt Pic4](https://raw.githubusercontent.com/nansquill/BlackBoxJPA/master/Screen4.png)
 
 #aktuelle Bugs:
 + Unsupported Media Type (415 response) -> Rest api kann die korrekten Abfragen über POST/PUT nicht bearbeiten, Lösungsweg: header hinzufügen mit 'content-type':'application/json'
