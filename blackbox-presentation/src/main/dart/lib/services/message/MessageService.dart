@@ -43,7 +43,7 @@ class MessageService{
 		}
 	}
 		
-	Future<Message> update(Message message) async {
+	Future<Message> update(dynamic message) async {
 		try	{
 			final url = '$_messageUrl/update';
 			final response = 
@@ -58,7 +58,7 @@ class MessageService{
 		}
 	}
 	
-	Future<Message> create(Message message) async {
+	Future<Message> create(dynamic message) async {
 		try {
 			final response = await _http.post(_messageUrl, headers: _headers, body: JSON.encode(message));
 			Message msg = new Message.fromJson(_extractData(response));

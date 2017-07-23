@@ -1,7 +1,7 @@
 # BlackBoxJPA
 
-ver:0.0.1-SNAPSHOT
-last modified: 21.06.17
+ver:0.0.2.alpha
+last modified: 23.07.17
 
 contributors: 
 Marcel Marchewka
@@ -9,7 +9,18 @@ Yunus Öztürk
 Milosz Sobieraj
 Irina Solovyeva
 
-# NEXT (0.0.2):
+* Aktuelle .war-Datei ist unter diesem Link zu finden -> http://www29.zippyshare.com/v/q1LceQW7/file.html
+* Ergebnisse zu ALEX sind unter diesem Link zu finden -> (kommt gleich)
+* Screenshots: 
++ Pic1: ![alt Pic1](http://imgur.com/SAoGHBU)
++ Pic2: ![alt Pic2](http://imgur.com/uFUufcR)
++ Pic3: ![alt Pic3](http://imgur.com/QxmcKna)
+
+#aktuelle Bugs:
++ Unsupported Media Type (415 response) -> Rest api kann die korrekten Abfragen über POST/PUT nicht bearbeiten, Lösungsweg: header hinzufügen mit 'content-type':'application/json'
+
+
+# 0.0.2-alpha released:
 + Add new entities (if needed) (blackbox-persistence) 
 + Extend REST-Interface with CRUD-classes (blackbox-business)
 + Update web interface (blackbox-presentation)

@@ -24,7 +24,7 @@ class CreateComponent {
 	
 	Future<Null> create() async
 	{
-		dynamic et = { "category" : category, "headline" : headline, "content" : content};
+		dynamic et = { "category" : category, "headline" : headline, "content" : content, "user" : ""};
 		await this._msgService.create(et);
 	}
 	

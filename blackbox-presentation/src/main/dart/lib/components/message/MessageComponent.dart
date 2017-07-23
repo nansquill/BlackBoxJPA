@@ -77,7 +77,14 @@ class MessageComponent implements OnInit {
 
 	
 	Future<Null> save() async {
-		await _msgService.update(selectedMessage);//then goback
+		dynamic et = {
+			"id" : selectedMessage.id,
+			"headline" : selectedMessage.headline,
+			"content" : selectedMessage.content,
+			"category" : selectedMessage.category,
+			"user" : selectedMessage.user
+		};
+		await _msgService.update(et);//then goback
 		selectedMessage = null;		
 	}
 	

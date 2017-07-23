@@ -1,7 +1,7 @@
 		<nav class="navbar navbar-default navbar-static-top" role="navigation">
         	<div class="container">
         		<div class="navbar-header">
-        			<a class="navbar-brand" href="/blackbox/">Schwarzes Brett</a>
+        			<a class="navbar-brand" href="/blackbox/">BlackBox</a>
         		</div>
         		<ul class="nav navbar-nav">
         			<li>
@@ -22,21 +22,22 @@
 		<div class="container">
 			<div class="row">
 				<div class="col-md-offset-1 col-lg-offset-1 col-md-10 col-lg-10">
-					<h3>Herzlich willkommen bei Blackbox!</h3>
-				    <br />				    
+					<h3>Herzlich willkommen bei Blackbox - Ihrem Dienst als schwarzes Brett!</h3>
+				    <br />
+				    <h6>Melden Sie sich mit den Benutzerdaten (admin/admin) oder registrieren Sie sich um die Nachrichten anzeigen</h6>			    
 				</div>
 			</div>
 			<div class="row">
-				<h1>{{ title }}</h1>
-				
 				<ul class="nav nav-pills">
-					<li class="active"><a [routerLink]="['CreateMessage']">Create</a></li>
-					<li class="active"><a [routerLink]="['Messages']">Show</a></li>
-					<li class="active"><a [routerLink]="['Categories']">Categories</a></li>
-					<li class="active"><a [routerLink]="['Register']">Register</a>
+					<li class="active"><a [routerLink]="['CreateMessage']">Erstelle eine neue Anzeige</a></li>
+					<li class="active"><a [routerLink]="['Messages']">Anzeigen</a></li>
+					<!-- <li class="active"><a [routerLink]="['Categories']">Kategorien</a></li>-->
+					<li class="active"><a [routerLink]="['Register']">Registerierungsformular</a>
 				</ul>
 				<div class="col-lg-12">
-					<router-outlet></router-outlet>
+					<router-outlet>
+				    
+					</router-outlet>
 				</div>
 				
 			</div>

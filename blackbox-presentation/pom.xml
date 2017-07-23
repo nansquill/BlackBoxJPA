@@ -8,7 +8,7 @@
 	<parent>
 		<groupId>com.webtec2</groupId>
 		<artifactId>blackbox-parent</artifactId>
-		<version>0.0.1-SNAPSHOT</version>
+		<version>0.0.2-alpha</version>
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 

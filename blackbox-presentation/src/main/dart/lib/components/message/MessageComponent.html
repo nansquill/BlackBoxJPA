@@ -1,9 +1,9 @@
 <div class="col-lg-9">
 <form class="form-horizontal">
 	<fieldset>
-		<legend>List of messages</legend>
+		<legend>Anzeigen</legend>
 		<div class="form-group">
-			<label class="control-label" for="category-select">Selected category</label>
+			<label class="control-label" for="category-select">Ihre Kategorie</label>
 			<select class="form-control" id="category-select" name="category-select">
 				<option *ngFor="let category of categories"
 					[class.selected]="category == selectedCategory"
@@ -19,9 +19,10 @@
 					<input type="checkbox" 
 					[(ngModel)]="subscribeMe"
 					(click)="onSubscribeClick()"
-					name="subscribeMe"> Show my messages only?
+					name="subscribeMe"> Nur meine Anzeigen
 				</label>
 			</div>
+			<button class="btn btn-primary" (click)="onSubscribeClick()">Ansicht neuladen</button>
 		</div>
 		<div class="form-group">
 			<ul class="messages list-group">
@@ -29,7 +30,8 @@
 					class="list-group-item"
 					[class.selected]="message == selectedMessage"
 					(click)="onSelect(message)">
-					<span class="badge">{{ message.category.name }}</span>{{ message.headline }}: {{ message.content }}
+					
+					<span class="badge">{{ message.category }}</span>Titel: {{ message.headline }} Inhalt: {{ message.content }}
 				</li>
 			</ul>
 		</div>
@@ -39,54 +41,56 @@
 <div class="col-lg-3">
 <form class="form-horizontal">
 	<fieldset>
-		<legend>{{ selectedMessage }}</legend>
-		<div *ngIf="selectedMessage != null">
-			<h2>{{ selectedMessage.headline | uppercase }} is selected message</h2>
+		<legend>Eigene Anzeige bearbeiten</legend>
+		<div *ngIf="selectedMessage == null || !subscribeMe">
+			<h4>Bitte klicken Sie auf meine Anzeigen und suche Sie eine Ihrer Anzeigen aus</h4>
+		</div>
+		<div *ngIf="selectedMessage != null && subscribeMe">
 			<div class="form-group">
 				<label for="inputId" class="col-lg-2 control-label">Id</label>
 				<div class="col-lg-10">
-					<input name="inputId" class="form-control" [(ngModel)]="selectedMessage.id" disabled="" placeholder="id" type="number">
+					<span>{{ selectedMessage.id }}</span>
 				</div>
 			</div>
 			<div class="form-group">
-				<label for="inputUser" class="col-lg-2 control-label">User</label>
+				<label for="inputUser" class="col-lg-2 control-label">Benutzer</label>
 				<div class="col-lg-10">
-					<input name="inputUser" class="form-control" [(ngModel)]="selectedMessage.user" disabled="" placeholder="user" type="text">
+					<span>{{ selectedMessage.user }}</span>
 				</div>
 			</div>
 			<div class="form-group">
-				<label for="inputCategory" class="col-lg-2 control-label">Category</label>
+				<label for="inputCategory" class="col-lg-2 control-label">Kategorie</label>
 				<div class="col-lg-10">
 					<select class="form-control" id="inputCategory" name="inputCategory">
 						<option *ngFor="let category of categories"
 							[class.selected]="category == selectedMessage.category"
-							value="{{ category.name }}">
+							value="{{ category }}">
 							{{ category.name }}
 						</option>
 					</select>
 				</div>
 			</div>
 			<div class="form-group">
-				<label for="inputPublishedOn" class="col-lg-2 control-label">Published</label>
+				<label for="inputPublishedOn" class="col-lg-2 control-label">Erstellungsdatum</label>
 				<div class="col-lg-10">
-					<input name="inputPublishedOn" class="form-control"[(ngModel)]="selectedMessage.publishedOn" disabled="" placeholder="published on" type="text">
+					<span>{{ selectedMessage.publishedOn }}</span>
 				</div>
 			</div>
 			<div class="form-group">
-				<label for="inputHeadline" class="col-lg-2 control-label">Headline</label>
+				<label for="inputHeadline" class="col-lg-2 control-label">Titel</label>
 				<div class="col-lg-10">
 					<input name="inputHeadline" class="form-control"[(ngModel)]="selectedMessage.headline" disabled="" placeholder="title" type="text">
 				</div>
 			</div>
 			<div class="form-group">
-				<label for="inputContent" class="col-lg-2 control-label">Content</label>
+				<label for="inputContent" class="col-lg-2 control-label">Inhalt</label>
 				<div class="col-lg-10">
 					<input name="inputContent" class="form-control"[(ngModel)]="selectedMessage.content" disabled="" placeholder="content" type="text">
 				</div>
 			</div>
 			<div class="form-group">
-				<button class="btn btn-warning" (click)="save()">Save</button>
-				<button class="btn btn-danger" (click)="delete(); $event.stopPropagation()">Delete</button>
+				<button class="btn btn-warning" (click)="save()">Speichern</button>
+				<button class="btn btn-danger" (click)="delete(); $event.stopPropagation()">Nachricht entfernen</button>
 			</div>
 		</div>
 	</fieldset>
