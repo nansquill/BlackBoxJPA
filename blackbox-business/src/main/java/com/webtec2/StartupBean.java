@@ -31,7 +31,7 @@ public class StartupBean {
 
 	@PostConstruct
 	public void startup() {
-		
+		System.out.println("[Info] Starting application");
 		DBCategory itemCategory = this.entityManager.find(DBCategory.class, "Verkaufe");
 		
 		if(itemCategory == null)
@@ -45,12 +45,15 @@ public class StartupBean {
 			//Create 3 users			
 			DBMessage message = new DBMessage("admin", this.entityManager.find(DBCategory.class, "Informiere"), "Willkommen", "Die Applikation ist erfolgreich gestartet.");
 			this.entityManager.persist(message);
+			System.out.println("[Info] Successfully created 4 categories and 1 message");
 		}		
 	}
 
 	@PreDestroy
 	public void shutdown() {
 		// potential cleanup work
+		System.out.println("[Info] Shutting down application");
 		this.entityManager.clear();
+		
 	}
 }

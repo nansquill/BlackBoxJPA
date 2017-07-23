@@ -11,7 +11,7 @@ import '../../models/MockCategories.dart';
 class CategoryService{
 
 	static const _categoryUrl = '../rest/types'; //URL to web api
-	static final _headers = {'Content-Type': 'application/json'};
+	static final _headers = {'Content-Type': 'application/json', 'Accept':'application/json'};
 	final Client _http;
 	
 	CategoryService(this._http);	
@@ -22,6 +22,7 @@ class CategoryService{
 			final categories = _extractData(response)
 				.map((value) => new Category.fromJson(value))
 				.toList();
+			print("[Info] Received " + categories.length + " categories");
 			return categories;
 		}
 		catch(e) {
@@ -32,7 +33,9 @@ class CategoryService{
 	Future<Category> getCategory(String name) async {
 		try	{
 			final response = await _http.get('$_categoryUrl/$name');
-			return new Category.fromJson(_extractData(response));
+			Category cat = new Category.fromJson(_extractData(response));
+			print("[Info] Receive category " + cat.name);
+			return cat;
 		}
 		catch(e)	{
 			throw _handleError(e);
@@ -44,7 +47,9 @@ class CategoryService{
 			final url = '$_categoryUrl/update';
 			final response = 
 				await _http.put(url, headers:_headers, body: JSON.encode(category));
-			return new Category.fromJson(_extractData(response));
+			Category cat = new Category.fromJson(_extractData(response));
+			print("[Info] Updated category " + cat.name);
+			return cat;
 		}
 		catch(e)	{
 			throw _handleError(e);
@@ -54,7 +59,9 @@ class CategoryService{
 	Future<Category> create(Category category) async {
 		try	{
 			final response = await _http.post(_categoryUrl, headers: _headers, body: JSON.encode(category));
-			return new Category.fromJson(_extractData(response));
+			Category cat = new Category.fromJson(_extractData(response));
+			print("[Info] Created category " + cat.name);
+			return cat;
 		}
 		catch(e)	{
 			throw _handleError(e);
@@ -64,7 +71,8 @@ class CategoryService{
 	Future<Category> delete(String name) async {
 		try {
 			final url = '$_categoryUrl/$name';
-			await _http.delete(url, headers: _headers);
+			final Response = await _http.delete(url, headers: _headers);
+			print("[Info] Deleted category " + name);
 		}
 		catch(e)	{
 			throw _handleError(e);
@@ -76,7 +84,7 @@ class CategoryService{
 	dynamic _extractData(Response resp) => JSON.decode(resp.body);
 	
 	Exception _handleError(dynamic e)	{
-		print(e);
+		print("[Error] $e");
 		return new Exception('Server error; cause: $e');
 	}	
 }

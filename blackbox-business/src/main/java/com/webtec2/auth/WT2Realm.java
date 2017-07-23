@@ -28,6 +28,7 @@ public class WT2Realm extends AuthorizingRealm implements Realm {
 		final Set<Bean<?>> beans = bm.getBeans(DatabaseAuthenticator.class);
 
 		if (beans.isEmpty()) {
+			System.out.println("[Error] Authentication Exception");
 			throw new AuthenticationException();
 		}
 
@@ -46,9 +47,10 @@ public class WT2Realm extends AuthorizingRealm implements Realm {
 			@Override
 			public Collection<String> getRoles() {
 				if ("admin".equals(principals.getPrimaryPrincipal())) {
+					System.out.println("[Info] User has the admin role");
 					return Collections.singleton("admin");
 				}
-
+				System.out.println("[Info] User has no rule");
 				return Collections.emptyList();
 			}
 			

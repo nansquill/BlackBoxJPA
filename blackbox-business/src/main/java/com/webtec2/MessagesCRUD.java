@@ -54,6 +54,7 @@ public class MessagesCRUD implements CRUDInterface<DBMessage> {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response readAll()	{	
+		final Subject subject = SecurityUtils.getSubject();
 		final CriteriaBuilder builder;
 		List<DBMessage> result = new ArrayList<DBMessage>();		
 		try
@@ -67,23 +68,26 @@ public class MessagesCRUD implements CRUDInterface<DBMessage> {
 		catch(IllegalStateException ex)
 		{
 			//if the entity manager has been closed
-			System.out.println("Error the entity manager has been closed");
+			System.out.println("[Error] Entity manager not reachable");
+			System.out.println(ex);
 		}
 		catch(IllegalArgumentException ex)
 		{			
 			//if the selection is a compound selection and more than one selection item has the same assigned alias
-			System.out.println("Error the selection is a compound selection and more than one selection item has the same assigned alias");
+			System.out.println("[Error] Duplicated message found");
+			System.out.println(ex);
 		}
-		
 		//Read All should be permitted to everyone		
-		final Subject subject = SecurityUtils.getSubject();
 		final Permission readMessageItemPermission = new ReadMessageItemPermission(subject.getPrincipal().toString());
-		try{subject.checkPermission("ReadMessageItemPermission");}
+		try{
+			subject.checkPermission("ReadMessageItemPermission");
+		}
 		catch(AuthorizationException ex){
-
-			System.out.println("Error ReadMessageItemPermission not given");
+			System.out.println("[Error] User " + subject.getPrincipal() + " is not permitted to read message");
+			System.out.println(ex);
 			return Response.status(Response.Status.UNAUTHORIZED).build();
 		}
+		System.out.println("[Info] Found " + result.size() + " messages");
 		return Response.ok(result).build();	
 	}	
 	
@@ -94,9 +98,12 @@ public class MessagesCRUD implements CRUDInterface<DBMessage> {
 	public Response read(@PathParam("id") final long id) {
 		final Subject subject = SecurityUtils.getSubject();
 		final Permission readMessageItemPermission = new ReadMessageItemPermission(subject.getPrincipal().toString());
-		try{subject.checkPermission("ReadMessageItemPermission");}
+		try{
+			subject.checkPermission("ReadMessageItemPermission");
+		}
 		catch(AuthorizationException ex){
-			System.out.println("Error ReadMessageItemPermission not given");
+			System.out.println("[Error] User " + subject.getPrincipal() + " is not permitted to read message");
+			System.out.println(ex);
 			return Response.status(Response.Status.UNAUTHORIZED).build();
 		}
 		DBMessage message = null;		
@@ -107,9 +114,11 @@ public class MessagesCRUD implements CRUDInterface<DBMessage> {
 		catch(IllegalArgumentException ex)
 		{
 			//if the first argument does not denote an entity type or the second argument is is not a valid type for that entity primary key or is null
-			System.out.println("Error the first argument does not denote an entity type or the second argument is is not a valid type for that entity primary key or is null");
+			System.out.println("[Error] Message " + id + " is not valid");
+			System.out.println(ex);
 		}
 		//Read should be permitted to everyone
+		System.out.println("[Info] Found message " + message.getId());
 		return Response.ok(message).build();
 	}
 	
@@ -120,38 +129,41 @@ public class MessagesCRUD implements CRUDInterface<DBMessage> {
 	public Response create(final DBMessage param) {		
 		final Subject subject = SecurityUtils.getSubject();
 		final DBMessage message;
+		//Permission denied if not registered or not allowed
+		//final Permission writeMessageItemPermission = new WriteMessageItemPermission(message, subject.getPrincipal().toString());
+		try{subject.checkPermission("WriteMessageItemPermission");}
+		catch(AuthorizationException ex){
+			System.out.println("[Error] User " + subject.getPrincipal() + " is not permitted to write message");
+			System.out.println(ex);
+			return Response.status(Response.Status.UNAUTHORIZED).build();
+		}			
 		try
 		{
 			message = new DBMessage(subject.getPrincipal().toString(), param.getCategory(), param.getHeadline(), param.getContent());
-			
+			this.entityManager.persist(message);
 		}
 		catch(EntityExistsException ex)
 		{
 			//if the entity already exists.
-			System.out.println("Error the entity already exists.");
+			System.out.println("[Error] Duplicated message " + param.getId());
+			System.out.println(ex);
 			return Response.status(Status.CONFLICT).build();
 		}
 		catch(IllegalArgumentException ex)
 		{
 			//if the instance is not an entity
-			System.out.println("Error the instance is not an entity");
+			System.out.println("[Error] Invalid message");
+			System.out.println(ex);
 			return Response.status(Status.BAD_REQUEST).build();
 		}
 		catch(TransactionRequiredException ex)
 		{
 			//if invoked on a container-managed entity manager of type PersistenceContextType.TRANSACTION and there is no transaction
-			System.out.println("Error invoked on a container-managed entity manager of type PersistenceContextType.TRANSACTION and there is no transaction");
+			System.out.println("[Error] Internal server error");
+			System.out.println(ex);
 			return Response.status(Status.INTERNAL_SERVER_ERROR).build();
-		}
-		
-		//Permission denied if not registered or not allowed
-		final Permission writeMessageItemPermission = new WriteMessageItemPermission(message, subject.getPrincipal().toString());
-		try{subject.checkPermission("WriteMessageItemPermission");}
-		catch(AuthorizationException ex){
-			System.out.println("Error WriteMessageItemPermission not given");
-			return Response.status(Response.Status.UNAUTHORIZED).build();
-		}			
-		this.entityManager.persist(message);
+		}		
+		System.out.println("[Info] Message " + message.getId() + " has been created");
 		return Response.ok(message).build();		
 	}
 	
@@ -169,33 +181,38 @@ public class MessagesCRUD implements CRUDInterface<DBMessage> {
 		{
 			//if the first argument does not denote an entity type or the second argument is is not a valid type for that entitys primary
 			//if instance is not an entity or is a removed entity
-			System.out.println("Error instance is not an entity or is a removed entity");
+			System.out.println("[Error] Message " + id + " couldn't be found");
+			System.out.println(ex);
 			return Response.status(Status.BAD_REQUEST).build();
 		}
 		catch(TransactionRequiredException ex)
 		{
 			//if invoked on a container-managed entity manager of type PersistenceContextType.TRANSACTION and there is no transaction
-			System.out.println("Error invoked on a container-managed entity manager of type PersistenceContextType.TRANSACTION and there is no transaction");
+			System.out.println("[Error] Internal server error");
+			System.out.println(ex);
 			return Response.status(Status.INTERNAL_SERVER_ERROR).build();
 		}		
-		
 		//Permitted, if user owns this message or is admin
 		final Subject subject = SecurityUtils.getSubject();
 		final Permission deleteMessageItemPermission = new DeleteMessageItemPermission(message, subject.getPrincipal().toString());
 		try{subject.checkPermission("DeleteMessageItemPermission");}
 		catch(AuthorizationException ex){
-			System.out.println("Error DeleteMessageItemPermission not given");
+			System.out.println("[Error] User " + subject.getPrincipal() + " is not permitted to delete message");
+			System.out.println(ex);
 			return Response.status(Response.Status.UNAUTHORIZED).build();			
 		}
 		try{this.entityManager.remove(message);}
 		catch(IllegalArgumentException ex) {
-			System.out.println("Error the instance is not an entity or is a detached entity");
+			System.out.println("[Error] Internal server error");
+			System.out.println(ex);
 			return Response.status(Status.INTERNAL_SERVER_ERROR).build();			
 		}
 		catch(TransactionRequiredException ex) {
-			System.out.println("Error invoked on a container-managed entity manager of type PersistenceContextType.TRANSACTION and there is no transaction");
+			System.out.println("[Error] Internal server error");
+			System.out.println(ex);
 			return Response.status(Status.INTERNAL_SERVER_ERROR).build();			
 		}
+		System.out.println("[Info] Message " + message.getId() + " has been deleted");
 		return Response.ok(message).build();
 	}
 	
@@ -209,7 +226,8 @@ public class MessagesCRUD implements CRUDInterface<DBMessage> {
 		final Permission deleteMessageItemPermission = new DeleteMessageItemPermission(param, subject.getPrincipal().toString());
 		try{subject.checkPermission("DeleteMessageItemPermission");}
 		catch(AuthorizationException ex){
-			System.out.println("Error DeleteMessageItemPermission not given");
+			System.out.println("[Error] User " + subject.getPrincipal() + " is not permitted to delete message");
+			System.out.println(ex);
 			return Response.status(Response.Status.UNAUTHORIZED).build();
 		}					
 		try
@@ -219,15 +237,18 @@ public class MessagesCRUD implements CRUDInterface<DBMessage> {
 		catch(IllegalArgumentException ex)
 		{
 			//if instance is not an entity or is a removed entity
-			System.out.println("Error instance is not an entity or is a removed entity");
+			System.out.println("[Error] Invalid message");
+			System.out.println(ex);
 			return Response.status(Status.BAD_REQUEST).build();
 		}
 		catch(TransactionRequiredException ex)
 		{
 			//if invoked on a container-managed entity manager of type PersistenceContextType.TRANSACTION and there is no transaction
-			System.out.println("Error invoked on a container-managed entity manager of type PersistenceContextType.TRANSACTION and there is no transaction");
+			System.out.println("[Error] Internal server error");
+			System.out.println(ex);
 			return Response.status(Status.INTERNAL_SERVER_ERROR).build();
 		}		
+		System.out.println("[Info] Message " + param.getId() + " has been deleted");
 		return Response.ok(param).build();	
 	}	
 	
@@ -240,7 +261,8 @@ public class MessagesCRUD implements CRUDInterface<DBMessage> {
 		final Permission writeMessageItemPermission = new WriteMessageItemPermission(param, subject.getPrincipal().toString());
 		try{subject.checkPermission("WriteMessageItemPermission");}
 		catch(AuthorizationException ex){
-			System.out.println("Error WriteMessageItemPermission not given");
+			System.out.println("[Error] User " + subject.getPrincipal() + " is not permitted to write message");
+			System.out.println(ex);
 			return Response.status(Response.Status.UNAUTHORIZED).build();
 		}								
 		try
@@ -250,22 +272,25 @@ public class MessagesCRUD implements CRUDInterface<DBMessage> {
 		catch(EntityNotFoundException ex)
 		{
 			//if the entity no longer exists in the database
-			System.out.println("Error the entity no longer exists in the database");
+			System.out.println("[Error] Invalid message");
+			System.out.println(ex);
 			return Response.status(Status.CONFLICT).build();
 		}
 		catch(IllegalArgumentException ex)
 		{
 			//if the instance is not an entity or the entity is not managed
-			System.out.println("Error the instance is not an entity or the entity is not managed");
+			System.out.println("[Error] Invalid message");
+			System.out.println(ex);
 			return Response.status(Status.BAD_REQUEST).build();
 		}
 		catch(TransactionRequiredException ex)
 		{
 			//if invoked on a container-managed entity manager of type PersistenceContextType.TRANSACTION and there is no transaction
-			System.out.println("Error invoked on a container-managed entity manager of type PersistenceContextType.TRANSACTION and there is no transaction");
+			System.out.println("[Error] Internal server error");
+			System.out.println(ex);
 			return Response.status(Status.INTERNAL_SERVER_ERROR).build();
 		}
-		
+		System.out.println("[Info] Message " + param.getId() + " has been edited");
 		return Response.ok(param).build();	
 	}	
 }

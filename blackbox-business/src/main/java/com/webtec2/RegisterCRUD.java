@@ -37,7 +37,7 @@ import com.webtec2.DBUser;
 
 @Path("/register")
 @Transactional
-public class Register {
+public class RegisterCRUD {
 	
 	/**
 	 * API overview:
@@ -45,26 +45,51 @@ public class Register {
 	 *  / @POST -> retrieve session data for the user
 	 *  /login @POST -> retrieve session data for the user
 	 *  /logout @POST -> retrieve session data for the user
+	 *  /auth @GET -> retrieve if user authenticated
+	 *  
 	 */	
 
 	@PersistenceContext
 	private EntityManager entityManager;
 	
-	@Path("/{username}/{password}")
-	@GET
+	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response read(@PathParam("username") final String username, @PathParam("password") final String password) {
+	public Response read(final String username, final String password) {
 		DBUser user = new DBUser(username, password);
-		this.entityManager.persist(user);
+		try {
+			this.entityManager.persist(user);
+		}
+		catch(EntityExistsException ex)
+		{
+			//if the entity already exists.
+			System.out.println("[Error] Duplicated user " + username);
+			System.out.println(ex);
+			return Response.status(Status.CONFLICT).build();
+		}
+		catch(IllegalArgumentException ex)
+		{
+			//if the instance is not an entity
+			System.out.println("[Error] Invalid user");
+			System.out.println(ex);
+			return Response.status(Status.BAD_REQUEST).build();
+		}
+		catch(TransactionRequiredException ex)
+		{
+			//if invoked on a container-managed entity manager of type PersistenceContextType.TRANSACTION and there is no transaction
+			System.out.println("[Error] Internal server error");
+			System.out.println(ex);
+			return Response.status(Status.INTERNAL_SERVER_ERROR).build();
+		}		
 		
+		System.out.println("[Info] User " + user.getUsername() + " has been created");
 		return login(username, password);
 	}
 	
-	@Path("/login/{username}/{password}")
-	@GET
+	@Path("/login")
+	@POST
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response login(@PathParam("username") String username, @PathParam("password") String password) {
+	public Response login(String username, String password) {
 		Subject currentUser = SecurityUtils.getSubject();
 		if(!currentUser.isAuthenticated())
 		{
@@ -73,28 +98,31 @@ public class Register {
 			try
 			{
 				currentUser.login(token);
-				System.out.println("User [" + username + "] has logged in");
+				System.out.println("[Info] User " + username + " has logged in");
 				currentUser.getSession().setAttribute("username", username);
 				return Response.ok(currentUser).build();	
 			}
 			catch(UnknownAccountException uae) 
 			{
-				System.out.println("Error: There is no user with username of " + username);
+				System.out.println("[Error] User " + username + " couldn't be found");
+				System.out.println(uae);
 				return Response.status(Status.BAD_REQUEST).build();
 			}
 			catch(IncorrectCredentialsException ice)
 			{
-				System.out.println("Password for account " + username + " was incorrect!");
+				System.out.println("[Error] Password does not match");
+				System.out.println(ice);
 				return Response.status(Status.BAD_REQUEST).build();
 			}
 			catch(LockedAccountException lae)
 			{
-				System.out.println("The account for username " + username + " is locked. Please contact admin.");
+				System.out.println("[Error] User " + username + " has been deactivated");
+				System.out.println(lae);
 				return Response.status(Status.BAD_REQUEST).build();
 			}	
 		}
-		System.out.println("User " + username + " is already logged in");
-		return Response.status(Status.BAD_REQUEST).build();		
+		System.out.println("[Info] User " + username + " is already logged in");
+		return Response.ok(currentUser).build();		
 	}
 	
 	@Path("/logout")
@@ -104,8 +132,24 @@ public class Register {
 	public Response logout() {
 		Subject currentUser = SecurityUtils.getSubject();
 		if(currentUser != null)
-			currentUser.logout();	
+		{
+			currentUser.logout();
+			System.out.println("[Info] User " + currentUser.getPrincipal() + " has logged out");
+		}		
 		return Response.ok(currentUser).build();		
 	}
 
+	@Path("/auth")
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response isAuth() {
+		Subject currentUser = SecurityUtils.getSubject();
+		if(currentUser.isAuthenticated())
+		{
+			System.out.println("[Info] User " + currentUser.getPrincipal() + " is authenticated");
+			return Response.ok(currentUser).build();
+		}		
+		System.out.println("[Error] User " + currentUser.getPrincipal() + " is not authenticated");
+		return Response.status(Status.BAD_REQUEST).build();		
+	}
 }

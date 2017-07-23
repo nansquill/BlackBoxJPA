@@ -11,7 +11,7 @@ import '../../models/MockMessages.dart';
 class MessageService{
 	static const _categoryUrl = '../rest/types'; 
 	static const _messageUrl = '../rest/messages'; //URL to web api
-	static final _headers = {'Content-Type': 'application/json'};
+	static final _headers = {'Content-Type': 'application/json', 'Accept':'application/json'};
 	final Client _http;
 	
 	MessageService(this._http);
@@ -22,6 +22,7 @@ class MessageService{
 			final messages = _extractData(response)
 				.map((value) => new Message.fromJson(value))
 				.toList();
+			print("[Info] Received " + messages.length + " messages");
 			return messages;
 		}
 		catch(e)	{
@@ -32,7 +33,9 @@ class MessageService{
 	Future<Message> getMessage(int id) async {
 		try	{
 			final response = await _http.get('$_messageUrl/$id');
-			return new Message.fromJson(_extractData(response));
+			Message msg = new Message.fromJson(_extractData(response));
+			print("[Info] Received message " + msg.id);
+			return msg;
 		}
 		catch(e)	{
 			throw _handleError(e);
@@ -44,7 +47,9 @@ class MessageService{
 			final url = '$_messageUrl/update';
 			final response = 
 				await _http.put(url, headers:_headers, body: JSON.encode(message));
-			return new Message.fromJson(_extractData(response));
+			Message msg = new Message.fromJson(_extractData(response));
+			print("[Info] Update message " + msg.id);
+			return msg;
 		}
 		catch(e)	{
 			throw _handleError(e);
@@ -54,7 +59,9 @@ class MessageService{
 	Future<Message> create(Message message) async {
 		try {
 			final response = await _http.post(_messageUrl, headers: _headers, body: JSON.encode(message));
-			return new Message.fromJson(_extractData(response));
+			Message msg = new Message.fromJson(_extractData(response));
+			print("[Info] Created message " + msg.id);
+			return msg;
 		}
 		catch(e)	{
 			throw _handleError(e);
@@ -65,6 +72,7 @@ class MessageService{
 		try	{
 			final url = '$_messageUrl/$id';
 			await _http.delete(url, headers: _headers);
+			print("[Info] Deleted message " + id);
 		}
 		catch(e)	{
 			throw _handleError(e);
@@ -78,6 +86,7 @@ class MessageService{
 			final messages = _extractData(response)
 				.map((value) => new Message.fromJson(value))
 				.toList();
+			print("[Info] Received " + messages.length + " messages with category " + name);
 			return messages;
 		}
 		catch(e)	{
@@ -90,7 +99,7 @@ class MessageService{
 	dynamic _extractData(Response resp) => JSON.decode(resp.body);
 	
 	Exception _handleError(dynamic e)	{
-		print(e);
+		print("[Error] $e");
 		return new Exception('Server error; cause: $e');
 	}
 }
