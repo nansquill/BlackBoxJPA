@@ -18,7 +18,7 @@ Irina Solovyeva
 
 #aktuelle Bugs:
 + Unsupported Media Type (415 response) -> Rest api kann die korrekten Abfragen über POST/PUT nicht bearbeiten, Lösungsweg: header hinzufügen mit 'content-type':'application/json'
-
++ EntityNotManaged wenn die Nachricht editiert wird
 
 # 0.0.2-alpha released:
 + Add new entities (if needed) (blackbox-persistence) 
