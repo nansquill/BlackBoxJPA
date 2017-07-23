@@ -12,9 +12,9 @@ Irina Solovyeva
 * Aktuelle .war-Datei ist unter diesem Link zu finden -> http://www85.zippyshare.com/v/DcTBdof9/file.html
 * Ergebnisse zu ALEX sind unter diesem Link zu finden -> (kommt gleich)
 * Screenshots: 
-+ Pic1: ![alt Pic1](http://imgur.com/SAoGHBU)
-+ Pic2: ![alt Pic2](http://imgur.com/uFUufcR)
-+ Pic3: ![alt Pic3](http://imgur.com/QxmcKna)
++ Pic1: ![alt Pic1](https://raw.githubusercontent.com/nansquill/BlackBoxJPA/master/screen1.png)
++ Pic2: ![alt Pic2](https://raw.githubusercontent.com/nansquill/BlackBoxJPA/master/Screen2.png)
++ Pic3: ![alt Pic3](https://raw.githubusercontent.com/nansquill/BlackBoxJPA/master/Screen3.png)
 
 #aktuelle Bugs:
 + Unsupported Media Type (415 response) -> Rest api kann die korrekten Abfragen über POST/PUT nicht bearbeiten, Lösungsweg: header hinzufügen mit 'content-type':'application/json'
