@@ -10,7 +10,9 @@ Milosz Sobieraj
 Irina Solovyeva
 
 * Aktuelle .war-Datei ist unter diesem Link zu finden -> http://www85.zippyshare.com/v/DcTBdof9/file.html
-* Ergebnisse zu ALEX sind unter diesem Link zu finden -> (kommt gleich)
+* Ergebnisse zu ALEX sind unter diesem Link zu finden -> 
++	BILD: http://svgur.com/i/2Jm.svg 
++	SYMBOLS: https://raw.githubusercontent.com/nansquill/BlackBoxJPA/master/Result.alex.symbols.json
 * Dokumetation -> https://onedrive.live.com/?authkey=%21AIJPPVWjgCAPYZw&cid=FE4CE451B615D619&id=FE4CE451B615D619%213137&parId=FE4CE451B615D619%212955&action=locate
 * Screenshots: 
 + Pic1: ![alt Pic1](https://raw.githubusercontent.com/nansquill/BlackBoxJPA/master/screen1.png)
