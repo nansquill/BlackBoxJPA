@@ -1,0 +1,52 @@
+<div *ngIf="mode=='login'" class="navbar-collapse collapse">
+	<form *ngIf="!isLoggedIn()" name="loginForm" class="navbar-form navbar-right" role="form">
+		<div class="form-group" ng-class="{'has-error' : errauthc}">
+			<label class="col-md-3 control-label" for="username">Benutzername</label>
+			<div class="col-md-9">
+				<input name="username" type="text" placeholder="Username" class="form-control" [(ngModel)]="currentUser.username" required>
+			</div>
+		</div>
+		<div class="form-group" ng-class="{'has-error' : errauthc}">
+			<label class="col-md-3 control-label" for="password">Passwort</label>
+			<div class="col-md-9">
+				<input name="password" type="password" placeholder="Password" class="form-control" [(ngModel)]="currentUser.password" required>
+			</div>
+		</div>
+		<button type="submit" (click)="getLogin()" class="btn btn-success" ng-disabled="loginForm.$pristine || loginForm.$invalid">
+			<span class="glyphicon glyphicon-log-in"></span> Anmelden
+		</button>
+	</form>
+	<form *ngIf="isLoggedIn()" class="navbar-form navbar-right" role="form">
+		<span>Willkommen, {{ currentUser.toString() }}</span>
+		<button type="submit" (click)="getLogout()" class="btn btn-danger">Abmelden</button>
+	</form>	
+</div>
+<div *ngIf="mode=='register'">
+    <form *ngIf="!isLoggedIn()" name="registerForm" class="navbar-form navbar-right" role="form">
+		<div class="form-group" ng-class="{'has-error' : errauthc}">
+			<label class="col-md-3 control-label" for="username">Benutzername</label>
+			<div class="col-md-9">
+				<input name="username" type="text" placeholder="Username" class="form-control" [(ngModel)]="currentUser.username" required>
+			</div>
+		</div>
+		<div class="form-group" ng-class="{'has-error' : errauthc}">
+			<label class="col-md-3 control-label" for="password">Passwort</label>
+			<div class="col-md-9">
+				<input name="password" type="password" placeholder="Password" class="form-control" [(ngModel)]="currentUser.password" required>
+			</div>
+        </div>
+        <div class="form-group" ng-class="{'has-error' : errauthc}">
+			<label class="col-md-3 control-label" for="password">Password wiederholen</label>
+			<div class="col-md-9">
+				<input name="passwordCheck" type="password" placeholder="Password" class="form-control" required>
+			</div>
+		</div>
+		<button type="submit" (click)="getRegister()" class="btn btn-success" ng-disabled="$password != $passwordCheck || loginForm.$pristine || loginForm.$invalid">
+			<span class="glyphicon glyphicon-log-in"></span> Anmelden
+		</button>
+	</form>
+	<form *ngIf="isLoggedIn()" class="" role="form">
+		<span>Sie sind gerade eingeloggt. Loggen Sie sich aus, um einen neuen Benutzer registrieren</span>
+		<button type="submit" (click)="getLogout()" class="btn btn-danger">Abmelden</button>
+	</form>
+</div>

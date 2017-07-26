@@ -1,0 +1,8 @@
+<div class="container">
+    <h1>Messages</h1>
+    <div *ngFor="let message of messages">
+        <message-form [message]="message" [mode]="'view'" (deleteRequest)="deleteChanged($event)" (updateRequest)="updateChanged($event)"></message-form>
+    </div>
+    <h2>Create new message</h2>
+    <message-form [message]="" [mode]="'create'" (createRequest)="createChanged($event)"></message-form>
+</div>

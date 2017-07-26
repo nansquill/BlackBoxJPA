@@ -1,0 +1,17 @@
+<div class="container">
+    <div class="row">
+        <div class="col-md-9">
+            <div class="jumbotron">
+                <h1 class="display-3">Willkommen bei Blackbox!</h1>
+                <p class="lead">Ihr Dienst als Schwarzes Brett! Erstellen Sie eine Anzeige und erreichen Sie viele Menschen mit Ihr Anliegen. Melden Sie sich an und entdecken Sie neue Perspektiven.</p>
+            </div>
+        </div>
+        <div class="col-md-3" *ngIf="!isLoggedIn()">
+            <login-form [user]="" [mode]="'login'" (registerChanged)="loginChanged($event)"></login-form>
+            <login-form [user]="" [mode]="'register'" (registerChanged)="registerChanged($event)"></login-form>
+        </div>
+        <div class="col-md-3" *ngIf="isLoggedIn()">
+            <p><a class="btn btn-lg btn-success" [routerLink]="Message" role="button">Weiter</a></p>
+        </div>
+    </div>
+</div>

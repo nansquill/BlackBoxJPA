@@ -12,9 +12,9 @@ public interface CRUDInterface<T> {
     //Read T data by id -> Path: /{id} 
     //T read(long id);
     //Update T data by obj -> Path: /update
-    Response update(T t);
+    //Response update(T t);
     //delete T obj -> Path: /delete
-    Response delete(T t);
+    //Response delete(T t);
     //delete T by id -> Path: /delete/{id}
     //Response deleteById(long id);
 }

@@ -1,0 +1,59 @@
+<div *ngIf="mode=='create'">
+    <h1>Nachritenformular</h1>
+    <form>
+        <div class="form-group">
+            <label for="user">Benutzer</label>
+            <user-form [user]="message.user" [mode]="'create'"></user-form>
+        </div>
+        <div class="form-group">
+            <label for="category">Kategorie</label>
+            <category-form [category]="message.category" [mode]="'create'"></category-form>
+        </div>
+        <div class="form-group">
+            <label for="category">Titel</label>
+            <input type="text" [(ngModel)]="message.headline">
+        </div>
+        <div class="form-group">
+            <label for="category">Nachricht</label>
+            <input type="text" [(ngModel)]="message.content">
+        </div>
+        <div class="form-group">
+            <label for="category">Erstellungsdatum</label>
+            <input type="text" [(ngModel)]="message.publishedOn">
+        </div>
+        <button type="reset" class="btn btn-info">Reset</button>
+        <button type="submit" (click)="create()" class="btn btn-default">Abschicken</button>
+    </form>
+</div>
+<div *ngIf="mode=='edit'">
+    <h1>Nachritenformular</h1>
+    <form>
+        <div class="form-group">
+            <label for="user">Benutzer</label>
+            <user-form [user]="message.user" [mode]="'view'"></user-form>
+        </div>
+        <div class="form-group">
+            <label for="category">Kategorie</label>
+            <category-form [category]="message.category" [mode]="'edit'"></category-form>
+        </div>
+        <div class="form-group">
+            <label for="category">Titel</label>
+            <input type="text" [(ngModel)]="message.headline">
+        </div>
+        <div class="form-group">
+            <label for="category">Nachricht</label>
+            <input type="text" [(ngModel)]="message.content">
+        </div>
+        <div class="form-group">
+            <label for="category">Erstellungsdatum</label>
+            <input type="text" [(ngModel)]="message.publishedOn">
+        </div>        
+        <button type="submit" (click)="delete()" class="btn btn-danger">Entfernen</button>
+        <button type="reset" class="btn btn-info">Reset</button>
+        <button type="submit" (click)="update()" class="btn btn-default">Speichern</button>
+    </form>
+</div>
+<div *ngIf="mode=='view'">
+    <h1>{{ message.toString() }}</h1>
+    <button type="submit" class="btn btn-warning" (click)="gotoEdit($message)">Bearbeiten</button>
+</div>

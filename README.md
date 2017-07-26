@@ -1,13 +1,21 @@
 # BlackBoxJPA
 
-ver:0.0.2.alpha
-last modified: 23.07.17
+ver:0.0.2.beta
+last modified: 26.07.17
 
 contributors: 
 Marcel Marchewka
 Yunus Öztürk
 Milosz Sobieraj
 Irina Solovyeva
+
+Update -> 0.0.2.beta (26.07.17)
+* Verbesserte Rechteverwaltung
+** bildet folgende Relationen ab:
+*** Admin - alle verfügbare Rechte
+*** Author (registriert) - können eigene Inhalte bearbeiten und löschen, sowie alle Daten Lesen und Schreiben
+*** registrierte Nutzer - können alle verfügbare Daten Lesen und Schreiben
+*** Nutzer - haben Zugang, einen Benutzeraccount anlegen zu können
 
 * Aktuelle .war-Datei ist unter diesem Link zu finden -> http://www85.zippyshare.com/v/DcTBdof9/file.html
 * Ergebnisse zu ALEX sind unter diesem Link zu finden -> 

@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.Date;
 import com.webtec2.DBCategory;
+import com.webtec2.DBUser;
 
 @Entity
 @Table(name="message", uniqueConstraints={
@@ -15,22 +16,20 @@ import com.webtec2.DBCategory;
 public class DBMessage extends DBIdentified {
 
 	private DBCategory category;
-	private String user;
+	private DBUser user;
 	private String headline;
 	private String content;
 	private Date publishedOn;
-	private boolean isOnline;
 	
 	public DBMessage() { }
 
-	public DBMessage(String user, DBCategory category, String headline, String content)
+	public DBMessage(DBUser user, DBCategory category, String headline, String content)
 	{
 		this.user = user;
 		this.headline = headline;
 		this.content = content;
 		this.category = category;
 		this.publishedOn = new Date();
-		this.isOnline = true;
 	}
 
 	@Temporal(TemporalType.TIMESTAMP)
@@ -44,13 +43,14 @@ public class DBMessage extends DBIdentified {
 		this.publishedOn = publishedOn;
 	}
 	
+	@ManyToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "user")
 	@JsonProperty(value="user")
-	public String getUser()	{
+	public DBUser getUser()	{
 		return user;
 	}
 	
-	public void setUser(String user)	{
+	public void setUser(DBUser user)	{
 		this.user = user;
 	}
 
@@ -83,16 +83,6 @@ public class DBMessage extends DBIdentified {
 
 	public void setCategory(DBCategory category) {
 		this.category = category;
-	}
-
-	@JsonProperty(value="is_online")
-	@Column(name="is_online")
-	public boolean getIsOnline() {
-		return isOnline;
-	}
-
-	public void setIsOnline(boolean isOnline) {
-		this.isOnline = isOnline;
 	}
 }
 

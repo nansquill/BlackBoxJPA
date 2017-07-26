@@ -41,19 +41,24 @@ public class StartupBean {
 			this.entityManager.persist(new DBCategory("Tausche"));
 			this.entityManager.persist(new DBCategory("Suche"));
 			this.entityManager.persist(new DBCategory("Informiere"));
+			
+			DBUser admin = new DBUser("admin", "admin");
+			DBUser user = new DBUser("user", "user");
+			this.entityManager.persist(admin);
+			this.entityManager.persist(user);
 
 			//Create 3 users			
-			DBMessage message = new DBMessage("admin", this.entityManager.find(DBCategory.class, "Informiere"), "Willkommen", "Die Applikation ist erfolgreich gestartet.");
+			DBMessage message = new DBMessage(admin, this.entityManager.find(DBCategory.class, "Informiere"), "Willkommen", "Die Applikation ist erfolgreich gestartet.");
 			this.entityManager.persist(message);
-			message = new DBMessage("admin", this.entityManager.find(DBCategory.class, "Informiere"), "Willkommen", "Die Applikation ist erfolgreich gestartet.");
+			message = new DBMessage(user, this.entityManager.find(DBCategory.class, "Informiere"), "Willkommen", "Die Applikation ist erfolgreich gestartet.");
 			this.entityManager.persist(message);
-			message = new DBMessage("user", this.entityManager.find(DBCategory.class, "Informiere"), "Willkommen", "Die Applikation ist erfolgreich gestartet.");
+			message = new DBMessage(user, this.entityManager.find(DBCategory.class, "Informiere"), "Willkommen", "Die Applikation ist erfolgreich gestartet.");
 			this.entityManager.persist(message);
-			message = new DBMessage("admin", this.entityManager.find(DBCategory.class, "Verkaufe"), "Sonderpreis UBoot", "Nagelneu und aus raucherfreien Haushalt.");
+			message = new DBMessage(admin, this.entityManager.find(DBCategory.class, "Verkaufe"), "Sonderpreis UBoot", "Nagelneu und aus raucherfreien Haushalt.");
 			this.entityManager.persist(message);
-			message = new DBMessage("admin", this.entityManager.find(DBCategory.class, "Suche"), "Pizza-Lieferant gesucht", "Fur kleines Geld grossen Hunger befriedigen.");
+			message = new DBMessage(user, this.entityManager.find(DBCategory.class, "Suche"), "Pizza-Lieferant gesucht", "Fur kleines Geld grossen Hunger befriedigen.");
 			this.entityManager.persist(message);
-			message = new DBMessage("admin", this.entityManager.find(DBCategory.class, "Kaufe"), "Lotto-Schein", "Naturlich nur einen, der Geld bringt.");
+			message = new DBMessage(admin, this.entityManager.find(DBCategory.class, "Kaufe"), "Lotto-Schein", "Naturlich nur einen, der Geld bringt.");
 			this.entityManager.persist(message);
 			
 			System.out.println("[Info] Successfully created 4 categories and 5 message");
@@ -64,7 +69,6 @@ public class StartupBean {
 	public void shutdown() {
 		// potential cleanup work
 		System.out.println("[Info] Shutting down application");
-		this.entityManager.clear();
-		
+		this.entityManager.clear();		
 	}
 }
