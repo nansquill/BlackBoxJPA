@@ -17,7 +17,7 @@ Update -> 0.0.2.beta (26.07.17)
 *** registrierte Nutzer - können alle verfügbare Daten Lesen und Schreiben
 *** Nutzer - haben Zugang, einen Benutzeraccount anlegen zu können
 
-* Aktuelle .war-Datei ist unter diesem Link zu finden -> http://www85.zippyshare.com/v/DcTBdof9/file.html
+* Aktuelle .war-Datei ist unter diesem Link zu finden -> http://www42.zippyshare.com/v/aV1oI8ei/file.html
 * Ergebnisse zu ALEX sind unter diesem Link zu finden -> 
 +	BILD: http://svgur.com/i/2Jm.svg 
 +	SYMBOLS: https://raw.githubusercontent.com/nansquill/BlackBoxJPA/master/Result.alex.symbols.json
