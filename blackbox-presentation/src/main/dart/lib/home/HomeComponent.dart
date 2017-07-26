@@ -19,19 +19,39 @@ class HomeComponent implements OnInit{
   HomeComponent(this._usrService);
 
   Future<Null> ngOnInit() async {
-		loggedIn = await this._usrService.getUser() != null;
+    try {
+		  loggedIn = await this._usrService.getUser() != null;
+    }
+    catch(ex) {
+      _handleException(ex);
+    }
 	}
 
   bool isLoggedIn() => loggedIn;
 
   void loginChanged(User user) {
-    loggedIn = true;
-    print("loggedIn true");
-    print(user.toString());
+    try {
+      loggedIn = true;
+      print("loggedIn true");
+      print(user.toString());
+    }
+    catch(ex) {
+      _handleException(ex);
+    }
   }
 
   void registerChanged(User user) {
-    print("registered true");
-    print(user.toString());
+    try {
+      print("registered true");
+      print(user.toString());
+    }
+    catch(ex) {
+      _handleException(ex);
+    }
+  }
+
+  dynamic _handleException(dynamic ex) {
+    print("HomeComponent");
+    print(ex);  
   }
 }

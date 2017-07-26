@@ -28,65 +28,90 @@ class LoginFormComponent implements OnInit {
 	LoginFormComponent(this._usrService);
 
 	Future<Null> ngOnInit() async {
-		if(!currentUser) {
-			currentUser = this._usrService.getUser();
-			if(currentUser)	{
-				print("[Info] Found user");
-				_changeRequest.add(currentUser);
+		try {
+			if(!currentUser) {
+				currentUser = this._usrService.getUser();
+				if(currentUser)	{
+					print("[Info] Found user");
+					_changeRequest.add(currentUser);
+				}
+			}
+			else
+			{
+				await this.getLogin();
 			}
 		}
-		else
-		{
-			await this.getLogin();
+		catch(ex) {
+			_handleException(ex);
 		}
 	}
 
 	dynamic getLogin() async {
-		if(mode != "login") {
-			print("[Error] You are not allowed to login here");
+		try {
+			if(mode != "login") {
+				print("[Error] You are not allowed to login here");
+				return false;
+			}
+			await this._usrService.login(currentUser);
+			currentUser = await this._usrService.getUser();
+			if(currentUser != null)	{
+				loggedIn = true;
+				_changeRequest.add(currentUser);
+				print("[Info] User " + currentUser.username + " has benn logged in");
+				return true;
+			}
+			print ("[Error] User is not logged in");
 			return false;
 		}
-		await this._usrService.login(currentUser);
-		currentUser = await this._usrService.getUser();
-		if(currentUser != null)	{
-			loggedIn = true;
-			_changeRequest.add(currentUser);
-			print("[Info] User " + currentUser.username + " has benn logged in");
-			return true;
+		catch(ex) {
+			_handleException(ex);
 		}
-		print ("[Error] User is not logged in");
-		return false;
 	}
 
 	dynamic getLogout() async {
-		if(mode != "login")	{
-			print("[Error] You are not allowed to logout here");
+		try{
+			if(mode != "login")	{
+				print("[Error] You are not allowed to logout here");
+				return false;
+			}
+			User resutl = await this._usrService.logout();
+			if(result != null) {
+				loggedIn = false;
+				print("[Info] User " + result.username + " has been logged out");
+				return true;
+			}
+			print("[Info] User is not logged out");
 			return false;
 		}
-		User resutl = await this._usrService.logout();
-		if(result != null) {
-			loggedIn = false;
-			print("[Info] User " + result.username + " has been logged out");
-			return true;
+		catch(ex) {
+			_handleException(ex);
 		}
-		print("[Info] User is not logged out");
-		return false;
 	}
 
 	dynamic getRegister() async {
-		if(mode != "register") {
-			print("[Error] You are not allowed to register here");
+		try {
+			if(mode != "register") {
+				print("[Error] You are not allowed to register here");
+				return false;
+			}
+			User result = await this._usrService.register(currentUser);
+			if(currentUser != null)	{
+				_changeRequest.add(currentUser);
+				print("[Info] User " + result.username + " has been registered");
+				return true;
+			}	
+			print("[Info] User is not registered");
 			return false;
 		}
-		User result = await this._usrService.register(currentUser);
-		if(currentUser != null)	{
-			_changeRequest.add(currentUser);
-			print("[Info] User " + result.username + " has been registered");
-			return true;
-		}	
-		print("[Info] User is not registered");
-		return false;
+		catch(ex) {
+			_handleException(ex);
+		}
 	}
 
 	bool isLoggedIn() => loggedIn;
+
+  	dynamic _handleException(dynamic ex) {
+		print("LoginFormComponent");
+		print(ex);  
+	}
 }

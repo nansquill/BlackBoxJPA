@@ -33,40 +33,65 @@ class MessageFormComponent {
   MessageFormComponent(this._usrService);
 
   Future<Null> gotoEdit(Message msg) async {
-    User user = await this._usrService.getUser();
-    if(!user || mode == "edit") { 
-      print("[Error] Mode invalid or user not found");
-      return;
+    try {
+      User user = await this._usrService.getUser();
+      if(!user || mode == "edit") { 
+        print("[Error] Mode invalid or user not found");
+        return;
+      }
+      if(user.username == msg.user.username || user.username == "admin")
+      {
+        print("[Info] Change to edit view");
+        message = msg;
+        mode = "edit";
+      }
     }
-    if(user.username == msg.user.username || user.username == "admin")
-    {
-      print("[Info] Change to edit view");
-      message = msg;
-      mode = "edit";
+    catch(ex) {
+      _handleException(ex);
     }
   }
 
   dynamic update() {
-    if(mode == "edit") {
-      print("[Info] Message update, change to show view");
-      mode = "view";
-      _updateRequest.add(message);
+    try {
+      if(mode == "edit") {
+        print("[Info] Message update, change to show view");
+        mode = "view";
+        _updateRequest.add(message);
+      }
+    }
+    catch(ex) {
+      _handleException(ex);
     }
   }
 
   dynamic delete() {
-    if(mode == "edit") {
-      print("[Info] Message delete, change to show view");
-      mode = "view";
-      _deleteRequest.add(message);
+    try {
+      if(mode == "edit") {
+        print("[Info] Message delete, change to show view");
+        mode = "view";
+        _deleteRequest.add(message);
+      }
+    }
+    catch(ex) {
+      _handleException(ex);
     }
   }
 
   dynamic create() {
-    if(mode == "create") {
-      print("[Info] Message create, change to show view");
-      mode = "view";
-      _createRequest.add(message);
+    try {
+      if(mode == "create") {
+        print("[Info] Message create, change to show view");
+        mode = "view";
+        _createRequest.add(message);
+      }
+    }
+    catch(ex) {
+      _handleException(ex);
     }
   }
+
+  dynamic _handleException(dynamic ex) {
+		print("MessageFormComponent");
+		print(ex);  
+	}
 }

@@ -12,4 +12,9 @@ class CategoryFormComponent {
   Category category;
   @Input('mode')
   String mode;
+
+  dynamic _handleException(dynamic ex) {
+    print("HomeComponent");
+    print(ex);  
+  }
 }

@@ -23,22 +23,47 @@ class MessageComponent implements OnInit{
 	}
 
   Future<Null> loadMessages() async {
-    messages = (await this._msgService.getAll()).toList();
-    print("[Info] Messages loaded");
+    try {
+      messages = (await this._msgService.getAll()).toList();
+      print("[Info] Messages loaded");
+    }
+    catch(ex) {
+      _handleException(ex);
+    }
   }
 
   Future<Null> deleteChanged(Message message) async {
+    try {
       this._msgService.delete(message);
       await loadMessages();
+    }
+    catch(ex) {
+      _handleException(ex);
+    }
   }
 
   Future<Null> updateChanged(Message message) async {
+    try{
       this._msgService.update(message);
       await loadMessages();
+    }
+    catch(ex) {
+      _handleException(ex);
+    }
   }
 
   Future<Null> createChanged(Message message) async {
-      this._msgService.create(message);
-      await loadMessages();
+      try{
+        this._msgService.create(message);
+        await loadMessages();
+      }
+      catch(ex) {
+        _handleException(ex);
+      }
   }
+
+  dynamic _handleException(dynamic ex) {
+		print("MessageComponent");
+		print(ex);  
+	}
 }
