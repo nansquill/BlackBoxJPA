@@ -100,15 +100,15 @@ public class MessagesCRUD implements CRUDInterface<DBMessage> {
 			System.out.println(ex);
 		}
 		//Check permission
+		List<DBUser> res = new List<DBMessage>();
 		final Subject subject = SecurityUtils.getSubject();
 		for(DBMessage message: result) {
-			if(!subject.isPermitted(new ReadMessageItemPermission(message, subject))) {
-				result.remove(message);
-				System.out.println("[Info] Result entry removed");
+			if(subject.isPermitted(new ReadMessageItemPermission(message, subject))) {
+				res.add(message);
 			}
 		}
-		System.out.println("[Info] Found " + result.size() + " messages");
-		return Response.ok(result).build();	
+		System.out.println("[Info] Found " + res.size() + " messages");
+		return Response.ok(res).build();	
 	}	
 	
 	@Path("/{id}")

@@ -74,15 +74,15 @@ public class CategoriesCRUD {
 			System.out.println(ex);
 		}
 		//Check permission
+		List<DBUser> res = new List<DBMessage>();
 		final Subject subject = SecurityUtils.getSubject();
 		for(DBCategory category : result) {
-			if(!subject.isPermitted(new ReadCategoryItemPermission(category, subject))) {
-				result.remove(category);
-				System.out.println("[Info] Result entry removed");
+			if(subject.isPermitted(new ReadCategoryItemPermission(category, subject))) {
+				res.add(category);
 			}
 		}	
-		System.out.println("[Info] Found " + result.size() + " categories");
-		return Response.ok(result).build();
+		System.out.println("[Info] Found " + res.size() + " categories");
+		return Response.ok(res).build();
 	}
 
 	@Path("/{name}")

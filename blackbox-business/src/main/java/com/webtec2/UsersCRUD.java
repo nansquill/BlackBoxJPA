@@ -74,15 +74,15 @@ public class UsersCRUD {
 			System.out.println(ex);
 		}
 		//Check permission
+		List<DBUser> res = new List<DBUser>();
 		final Subject subject = SecurityUtils.getSubject();
 		for(DBUser user : result) {
-			if(!subject.isPermitted(new ReadUserItemPermission(user, subject))) {
-				result.remove(user);
-				System.out.println("[Info] Result entry removed");
+			if(subject.isPermitted(new ReadUserItemPermission(user, subject))) {
+				res.add(user);
 			}
 		}		
-		System.out.println("[Info] Found " + result.size() + " users");
-		return Response.ok(result).build();
+		System.out.println("[Info] Found " + res.size() + " users");
+		return Response.ok(res).build();
 	}
 
 	@Path("/{username}")
