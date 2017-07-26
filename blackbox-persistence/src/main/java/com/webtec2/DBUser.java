@@ -31,12 +31,12 @@ public class DBUser {
 		return username;
 	}
 
-	public void setUsername(String name) {
+	public void setUsername(String username) {
 		this.username = username;
 	}
 	
-	@Column(name = "password")
 	@JsonProperty(value="password")
+	@Column(name="password")
 	public String getPassword() {
 		return password;
 	}
@@ -45,4 +45,3 @@ public class DBUser {
 		this.password = password;
 	}
 }
-
