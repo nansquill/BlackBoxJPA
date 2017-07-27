@@ -26,6 +26,7 @@ class MessageComponent implements OnInit {
 	List<Message> messages;
 	
 	Category selectedCategory;
+	String createCategory;
 	Message selectedMessage;
 	var createMessage;
 	
@@ -73,15 +74,18 @@ class MessageComponent implements OnInit {
 	
 	void onSelect(Message message) { 
 		selectedMessage = message;
+		Category cat = selectedMessage.category;
+		createCategory = cat.name;
 	}
 
 	
 	Future<Null> save() async {
+		Category cat = new Category(createCategory);
 		dynamic et = {
 			"id" : selectedMessage.id,
 			"headline" : selectedMessage.headline,
 			"content" : selectedMessage.content,
-			"category" : selectedMessage.category,
+			"category" : cat,
 			"user" : selectedMessage.user
 		};
 		await _msgService.update(et);//then goback

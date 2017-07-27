@@ -9,6 +9,7 @@ import 'package:http/http.dart';
 class LoginComponent {
 	static const _loginUrl = '../login.jsp';
 	static const _logoutUrl = '../logout';
+	static const _registerUrl = '../rest/register';
 	static final _headers = {'Content-Type': 'application/json'};
 	final Client _http;
 
@@ -24,9 +25,12 @@ class LoginComponent {
 		try	{
 			final url = '$_loginUrl';
 			final response = await _http.post(url, body: {"username" : username, "password" : password});
+			dynamic urlreg = '$_registerUrl/auth';
+			await _http.get(urlreg, headers: _headers);
 			loggedIn = true; 
 		}
 		catch(e)	{
+			loggedIn = false;
 			throw _handleError(e);
 		}
 	}

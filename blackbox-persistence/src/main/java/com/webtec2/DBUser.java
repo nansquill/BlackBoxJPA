@@ -32,7 +32,8 @@ public class DBUser {
 	}
 
 	public void setUsername(String name) {
-		this.username = username;
+		if(this.username == null)
+			this.username = username;
 	}
 	
 	@Column(name = "password")
@@ -42,7 +43,8 @@ public class DBUser {
 	}
 
 	public void setPassword(String password) {
-		this.password = password;
+		if(this.password == null)
+			this.password = password;
 	}
 }
 

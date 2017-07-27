@@ -56,43 +56,12 @@ public class WT2Realm extends AuthorizingRealm implements Realm {
 			
 			@Override
 			public Collection<String> getStringPermissions() {
-				if ("admin".equals(principals.getPrimaryPrincipal())) {
-			
-					String[] words = {"ReadMessageItemPermission",
-						"WriteMessageItemPermission",
-						"DeleteMessageItemPermission",
-						"ReadCategoryItemPermission",
-						"WriteCategoryItemPermission",
-						"DeleteCategoryItemPermission"};
-					return Arrays.asList(words);
-				}
-			
-				String[] words = {"ReadMessageItemPermission",
-					"WriteMessageItemPermission",
-					"DeleteMessageItemPermission",
-					"ReadCategoryItemPermission"};
-				return Arrays.asList(words);
-				
+				return Collections.emptyList();				
 			}
 
 			@Override
 			public Collection<Permission> getObjectPermissions() {
-				if ("admin".equals(principals.getPrimaryPrincipal())) {
-					return Arrays.asList(
-						new ReadMessageItemPermission(principals.getPrimaryPrincipal().toString()),
-						new WriteMessageItemPermission(new DBMessage(principals.getPrimaryPrincipal().toString(), new DBCategory("test"), "test", "test"), principals.getPrimaryPrincipal().toString()),
-						new DeleteMessageItemPermission(new DBMessage(principals.getPrimaryPrincipal().toString(), new DBCategory("test"), "test", "test"), principals.getPrimaryPrincipal().toString()),
-						new ReadCategoryItemPermission(principals.getPrimaryPrincipal().toString()),
-						new WriteCategoryItemPermission(new DBCategory(), principals.getPrimaryPrincipal().toString()),
-						new DeleteCategoryItemPermission(new DBCategory(), principals.getPrimaryPrincipal().toString())
-					);
-				}
-				return Arrays.asList(
-					new ReadMessageItemPermission(principals.getPrimaryPrincipal().toString()),
-					new WriteMessageItemPermission(new DBMessage(principals.getPrimaryPrincipal().toString(), new DBCategory("test"), "test", "test"), principals.getPrimaryPrincipal().toString()),
-					new DeleteMessageItemPermission(new DBMessage(principals.getPrimaryPrincipal().toString(), new DBCategory("test"), "test", "test"), principals.getPrimaryPrincipal().toString()),
-					new ReadCategoryItemPermission(principals.getPrimaryPrincipal().toString())
-				);
+				return Collections.emptyList();
 			}
 		};
 	}

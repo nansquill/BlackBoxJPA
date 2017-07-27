@@ -53,18 +53,6 @@ public class CategoriesCRUD {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response readAll()	{
-		//check subject first
-		final Subject subject = SecurityUtils.getSubject();
-		final Permission readCategoryItemPermission = new ReadCategoryItemPermission(subject.getPrincipal().toString());
-		try{	
-			subject.checkPermission("ReadCategoryItemPermission");
-		}
-		catch(AuthorizationException ex){
-			System.out.println("[Error] User " + subject.getPrincipal() + " is not permitted to read category item");
-			System.out.println(ex);
-			return Response.status(Response.Status.UNAUTHORIZED).build();
-		}
-		
 		final CriteriaBuilder builder;
 		List<DBCategory> result = new ArrayList<DBCategory>();
 		try
@@ -87,8 +75,16 @@ public class CategoriesCRUD {
 			System.out.println("[Error] Duplicated category found");
 			System.out.println(ex);
 		}
-		System.out.println("[Info] Found " + result.size() + " categories");
-		return Response.ok(result).build();
+		//Check permission
+		List<DBCategory> res = new ArrayList<DBCategory>();
+		final Subject subject = SecurityUtils.getSubject();
+		for(DBCategory category : result) {
+			if(subject.isPermitted(new ReadCategoryItemPermission(category, subject))) {
+				res.add(category);
+			}
+		}
+		System.out.println("[Info] Found " + res.size() + " categories");
+		return Response.ok(res).build();
 	}
 
 	@Path("/{name}")
@@ -96,22 +92,17 @@ public class CategoriesCRUD {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response read(@PathParam("name") String name) {
-		final Subject subject = SecurityUtils.getSubject();
-		final Permission readCategoryItemPermission = new ReadCategoryItemPermission(subject.getPrincipal().toString());
-		try{
-			subject.checkPermission("ReadCategoryItemPermission");
-		}
-		catch(AuthorizationException ex){
-			System.out.println("[Error] User " + subject.getPrincipal() + " is not permitted to read category item");
-			System.out.println(ex);
-			return Response.status(Response.Status.UNAUTHORIZED).build();
-		}
 		DBCategory category = null;
 		try
 		{
 			category =  this.entityManager.find(DBCategory.class, name);
 			if (category == null) {
 				category = new DBCategory(name);
+				//Check permission
+				final Subject subject = SecurityUtils.getSubject();
+				if(!subject.isPermitted(new ReadCategoryItemPermission(category, subject))) {
+					System.out.println("[Error] User " + subject.getPrincipal() + " is not permitted to read category");
+				}
 				this.entityManager.persist(category);
 				System.out.println("[Info] Category " + category.getName() + " has been created");
 			}
@@ -122,25 +113,26 @@ public class CategoriesCRUD {
 			System.out.println("[Error] Category " + name + " couldn't be found");
 			System.out.println(ex);
 		}
+		catch(Exception ex)
+		{
+			System.out.println("[Error] Categories name create=");
+			System.out.println(ex);
+		}
+		//Check permission
+		final Subject subject = SecurityUtils.getSubject();
+		if(!subject.isPermitted(new ReadCategoryItemPermission(category, subject))) {
+			System.out.println("[Error] User " + subject.getPrincipal() + " is not permitted to read category");
+			return Response.status(Response.Status.UNAUTHORIZED).build();
+		}
 		System.out.println("[Info] Found category " + category.getName());
 		return Response.ok(category).build();
 	}
-
+	
 	@Path("/{name}/messages")
 	@GET
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getMessages(@PathParam("name") String name) {
-		final Subject subject = SecurityUtils.getSubject();
-		final Permission readCategoryItemPermission = new ReadCategoryItemPermission(subject.getPrincipal().toString());
-		try{
-			subject.checkPermission("ReadCategoryItemPermission");
-		}
-		catch(AuthorizationException ex){
-			System.out.println("[Error] User " + subject.getPrincipal() + " is not permitted to read category item");
-			System.out.println(ex);
-			return Response.status(Response.Status.UNAUTHORIZED).build();
-		}
 		DBCategory category = null;
 		try
 		{
@@ -156,22 +148,42 @@ public class CategoriesCRUD {
 			System.out.println("[Error] Category " + name + " couldn't be found");
 			return Response.status(Status.BAD_REQUEST).build();
 		}
-		Query query = this.entityManager.createQuery("SELECT m FROM DBMessage m JOIN m.category c WHERE c = :category");
-		query.setParameter("category", category);
-		final List<DBMessage> result = query.getResultList();
-		
-		System.out.println("[Info] Found " + result.size() + " messages with category " + category.getName());
-		return Response.ok(result).build();
+		//Check permission
+		final Subject subject = SecurityUtils.getSubject();
+		if(!subject.isPermitted(new ReadCategoryItemPermission(category, subject))) {
+			System.out.println("[Error] User " + subject.getPrincipal() + " is not permitted to read category");
+			return Response.status(Response.Status.UNAUTHORIZED).build();
+		}
+		try {
+			Query query = this.entityManager.createQuery("SELECT m FROM DBMessage m JOIN m.category c WHERE c = :category");
+			query.setParameter("category", category);
+			final List<DBMessage> result = query.getResultList();
+			System.out.println("[Info] Found " + result.size() + " messages with category " + category.getName());
+			return Response.ok(result).build();
+		}
+		catch(Exception ex)
+		{
+			System.out.println("[Error]!!! Categories name create=");
+			System.out.println(ex);
+			return Response.status(Status.BAD_REQUEST).build();
+		}
 	}
 
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response create(final DBCategory param) {
+		//Check permission
+		final Subject subject = SecurityUtils.getSubject();
+		if(!subject.isPermitted(new WriteCategoryItemPermission(param, subject))) {
+			System.out.println("[Error] User " + subject.getPrincipal() + " is not permitted to write category");
+			return Response.status(Response.Status.UNAUTHORIZED).build();
+		}
 		final DBCategory category;
 		try
 		{
 			category = new DBCategory(param.getName());
+			this.entityManager.persist(category);
 		}
 		catch(EntityExistsException ex)
 		{
@@ -194,15 +206,6 @@ public class CategoriesCRUD {
 			System.out.println(ex);
 			return Response.status(Status.INTERNAL_SERVER_ERROR).build();
 		}
-		final Subject subject = SecurityUtils.getSubject();
-		final Permission writeCategoryItemPermission = new WriteCategoryItemPermission(category, subject.getPrincipal().toString());
-		try{subject.checkPermission("WriteCategoryItemPermission");}
-		catch(AuthorizationException ex){
-			System.out.println("Error WriteCategoryItemPermission not given");
-			return Response.status(Response.Status.UNAUTHORIZED).build();
-		}
-
-		this.entityManager.persist(category);
 		System.out.println("[Info] Created category " + category.getName());
 		return Response.ok(category).build();
 	}
@@ -216,6 +219,13 @@ public class CategoriesCRUD {
 		try
 		{
 			category = this.entityManager.find(DBCategory.class, name);
+			//Check permission
+			final Subject subject = SecurityUtils.getSubject();
+			if(!subject.isPermitted(new DeleteCategoryItemPermission(category, subject))) {
+				System.out.println("[Error] User " + subject.getPrincipal() + " is not permitted to delete category");
+				return Response.status(Response.Status.UNAUTHORIZED).build();
+			}
+			this.entityManager.remove(category);
 		}
 		catch(IllegalArgumentException ex)
 		{
@@ -232,27 +242,6 @@ public class CategoriesCRUD {
 			System.out.println(ex);
 			return Response.status(Status.INTERNAL_SERVER_ERROR).build();
 		}
-		final Subject subject = SecurityUtils.getSubject();
-		final Permission deleteCategoryItemPermission = new DeleteCategoryItemPermission(category, subject.getPrincipal().toString());
-		try{
-			subject.checkPermission("DeleteCategoryItemPermission");
-		}
-		catch(AuthorizationException ex){
-			System.out.println("[Error] User " + subject.getPrincipal() + " is not permitted to delete category");
-			System.out.println(ex);
-			return Response.status(Response.Status.UNAUTHORIZED).build();
-		}
-		try{this.entityManager.remove(category);}
-		catch(IllegalArgumentException ex) {
-			System.out.println("[Error] Internal server error");
-			System.out.println(ex);
-			return Response.status(Status.INTERNAL_SERVER_ERROR).build();
-		}
-		catch(TransactionRequiredException ex) {
-			System.out.println("[Error] Internal server error");
-			System.out.println(ex);
-			return Response.status(Status.INTERNAL_SERVER_ERROR).build();
-		}
 		System.out.println("[Info] Deleted category " + category.getName());
 		return Response.ok(category).build();	
 	}
@@ -262,14 +251,10 @@ public class CategoriesCRUD {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response delete(final DBCategory param) {
+		//Check permission
 		final Subject subject = SecurityUtils.getSubject();
-		final Permission deleteCategoryItemPermission = new DeleteCategoryItemPermission(param, subject.getPrincipal().toString());
-		try{
-			subject.checkPermission("DeleteCategoryItemPermission");
-		}
-		catch(AuthorizationException ex){
+		if(!subject.isPermitted(new DeleteCategoryItemPermission(param, subject))) {
 			System.out.println("[Error] User " + subject.getPrincipal() + " is not permitted to delete category");
-			System.out.println(ex);
 			return Response.status(Response.Status.UNAUTHORIZED).build();
 		}
 		try
@@ -299,19 +284,18 @@ public class CategoriesCRUD {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response update(final DBCategory param) {
+		//Check permission
 		final Subject subject = SecurityUtils.getSubject();
-		final Permission writeCategoryItemPermission = new WriteCategoryItemPermission(param, subject.getPrincipal().toString());
-		try{
-			subject.checkPermission("WriteCategoryItemPermission");
-		}
-		catch(AuthorizationException ex){
-			System.out.println("[Error] User " + subject.getPrincipal() + " is not permitted to edit category");
-			System.out.println(ex);
+		if(!subject.isPermitted(new DeleteCategoryItemPermission(param, subject))) {
+			System.out.println("[Error] User " + subject.getPrincipal() + " is not permitted to update category");
 			return Response.status(Response.Status.UNAUTHORIZED).build();
 		}
 		try
 		{
-			this.entityManager.refresh(param);
+			//Create instead of update
+			DBCategory cat = this.entityManager.find(DBCategory.class, param.getName());
+			if(cat == null)
+				this.entityManager.persist(param);
 		}
 		catch(EntityNotFoundException ex)
 		{

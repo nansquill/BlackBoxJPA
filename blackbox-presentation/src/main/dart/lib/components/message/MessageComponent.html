@@ -57,19 +57,7 @@
 				<div class="col-lg-10">
 					<span>{{ selectedMessage.user }}</span>
 				</div>
-			</div>
-			<div class="form-group">
-				<label for="inputCategory" class="col-lg-2 control-label">Kategorie</label>
-				<div class="col-lg-10">
-					<select class="form-control" id="inputCategory" name="inputCategory">
-						<option *ngFor="let category of categories"
-							[class.selected]="category == selectedMessage.category"
-							value="{{ category }}">
-							{{ category.name }}
-						</option>
-					</select>
-				</div>
-			</div>
+			</div>			
 			<div class="form-group">
 				<label for="inputPublishedOn" class="col-lg-2 control-label">Erstellungsdatum</label>
 				<div class="col-lg-10">
@@ -77,15 +65,21 @@
 				</div>
 			</div>
 			<div class="form-group">
+				<label for="inputCategory" class="col-lg-2 control-label">Kategorie</label>
+				<div class="col-lg-10">
+					<input type="text" [(ngModel)]="createCategory">
+				</div>
+			</div>
+			<div class="form-group">
 				<label for="inputHeadline" class="col-lg-2 control-label">Titel</label>
 				<div class="col-lg-10">
-					<input name="inputHeadline" class="form-control"[(ngModel)]="selectedMessage.headline" disabled="" placeholder="title" type="text">
+					<input name="inputHeadline" class="form-control"[(ngModel)]="selectedMessage.headline" placeholder="title" type="text">
 				</div>
 			</div>
 			<div class="form-group">
 				<label for="inputContent" class="col-lg-2 control-label">Inhalt</label>
 				<div class="col-lg-10">
-					<input name="inputContent" class="form-control"[(ngModel)]="selectedMessage.content" disabled="" placeholder="content" type="text">
+					<input name="inputContent" class="form-control"[(ngModel)]="selectedMessage.content" placeholder="content" type="text">
 				</div>
 			</div>
 			<div class="form-group">

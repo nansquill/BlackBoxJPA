@@ -52,10 +52,11 @@ public class RegisterCRUD {
 	@PersistenceContext
 	private EntityManager entityManager;
 	
+	@GET
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response read(final String username, final String password) {
+	public Response register(final String username, final String password) {
 		DBUser user = new DBUser(username, password);
 		try {
 			this.entityManager.persist(user);
@@ -83,14 +84,16 @@ public class RegisterCRUD {
 		}		
 		
 		System.out.println("[Info] User " + user.getUsername() + " has been created");
-		return login(username, password);
+		return Response.ok(user).build();
 	}
 	
 	@Path("/login")
+	@GET
 	@POST
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response login(String username, String password) {
 		Subject currentUser = SecurityUtils.getSubject();
+		DBUser user = new DBUser(username, password);
 		if(!currentUser.isAuthenticated())
 		{
 			UsernamePasswordToken token = new UsernamePasswordToken(username, password);
@@ -100,7 +103,7 @@ public class RegisterCRUD {
 				currentUser.login(token);
 				System.out.println("[Info] User " + username + " has logged in");
 				currentUser.getSession().setAttribute("username", username);
-				return Response.ok(currentUser).build();	
+				return Response.ok(user).build();	
 			}
 			catch(UnknownAccountException uae) 
 			{
@@ -122,7 +125,7 @@ public class RegisterCRUD {
 			}	
 		}
 		System.out.println("[Info] User " + username + " is already logged in");
-		return Response.ok(currentUser).build();		
+		return Response.ok(user).build();		
 	}
 	
 	@Path("/logout")
@@ -136,7 +139,8 @@ public class RegisterCRUD {
 			currentUser.logout();
 			System.out.println("[Info] User " + currentUser.getPrincipal() + " has logged out");
 		}		
-		return Response.ok(currentUser).build();		
+		DBUser user = new DBUser((String) currentUser.getPrincipal(), "");
+		return Response.ok(user).build();		
 	}
 
 	@Path("/auth")
@@ -147,9 +151,11 @@ public class RegisterCRUD {
 		if(currentUser.isAuthenticated())
 		{
 			System.out.println("[Info] User " + currentUser.getPrincipal() + " is authenticated");
-			return Response.ok(currentUser).build();
+			DBUser user = new DBUser((String) currentUser.getPrincipal(), "");
+			return Response.ok(user).build();
 		}		
 		System.out.println("[Error] User " + currentUser.getPrincipal() + " is not authenticated");
 		return Response.status(Status.BAD_REQUEST).build();		
 	}
+	
 }
