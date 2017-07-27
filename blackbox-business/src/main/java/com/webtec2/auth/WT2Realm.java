@@ -2,6 +2,7 @@ package com.webtec2.auth;
 
 import com.webtec2.DBMessage;
 import com.webtec2.DBCategory;
+import com.webtec2.DBUser;
 import com.webtec2.auth.permission.*;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
@@ -16,6 +17,7 @@ import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.CDI;
 import java.util.*;
+import org.apache.shiro.subject.Subject;
 
 public class WT2Realm extends AuthorizingRealm implements Realm {
 
@@ -42,26 +44,91 @@ public class WT2Realm extends AuthorizingRealm implements Realm {
 
 	@Override
 	protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals) {
+		
+		Subject user = (Subject) principals.oneByType(Subject.class);
+		if(user!=null)
+		{
+			System.out.println(user + " couldn't be detected");
+			return new AuthorizationInfo() {
+				@Override
+				public Collection<String> getRoles() { return Collections.emptyList();}
+				
+				@Override
+				public Collection<String> getStringPermissions() { return Collections.emptyList();}
+				
+				@Override
+				public Collection<Permission> getObjectPermissions() { return Collections.emptyList();}
+			};
+		}
+		System.out.println("User " + user.getPrincipal() + " has be detected");
+		
 		return new AuthorizationInfo() {
-
 			@Override
 			public Collection<String> getRoles() {
-				if ("admin".equals(principals.getPrimaryPrincipal())) {
+				if ("admin".equals(user.getPrincipal())) {
 					System.out.println("[Info] User has the admin role");
 					return Collections.singleton("admin");
 				}
-				System.out.println("[Info] User has no rule");
+				System.out.println("[Info] User has no role");
 				return Collections.emptyList();
 			}
 			
 			@Override
 			public Collection<String> getStringPermissions() {
-				return Collections.emptyList();				
+				if ("admin".equals(principals.getPrimaryPrincipal())) {			
+					String[] words = {"ReadMessageItemPermission",
+						"WriteMessageItemPermission",
+						"DeleteMessageItemPermission",
+						"ReadCategoryItemPermission",
+						"WriteCategoryItemPermission",
+						"DeleteCategoryItemPermission",
+						"ReadUserItemPermission",
+						"WriteUserItemPermission",
+						"DeleteUserItemPermission",};
+					return Arrays.asList(words);
+				}
+				else if(user.isAuthenticated()) {
+					String[] words = {"ReadMessageItemPermission",
+							"WriteMessageItemPermission",
+							"DeleteMessageItemPermission",
+							"ReadCategoryItemPermission",
+							"WriteCategoryItemPermission",
+							"ReadUserItemPermission",
+							"WriteUserItemPermission",
+							"DeleteUserItemPermission",};
+					return Arrays.asList(words);					
+				}
+				String[] words = {"WriteUserItemPermission"};
+				return Arrays.asList(words);				
 			}
 
 			@Override
 			public Collection<Permission> getObjectPermissions() {
-				return Collections.emptyList();
+				if ("admin".equals(principals.getPrimaryPrincipal())) {			
+					return Arrays.asList(
+						new ReadMessageItemPermission(null, user),
+						new WriteMessageItemPermission(null, user),
+						new DeleteMessageItemPermission(null, user),
+						new ReadCategoryItemPermission(null, user),
+						new WriteCategoryItemPermission(null, user),
+						new DeleteCategoryItemPermission(null, user),
+						new ReadUserItemPermission(null, user),
+						new WriteUserItemPermission(null, user),
+						new DeleteUserItemPermission(null, user));
+				}
+				else if(user.isAuthenticated()) {
+					return Arrays.asList(
+						new ReadMessageItemPermission(null, user),
+						new WriteMessageItemPermission(null, user),
+						new DeleteMessageItemPermission(null, user),
+						new ReadCategoryItemPermission(null, user),
+						new WriteCategoryItemPermission(null, user),
+						new ReadUserItemPermission(null, user),
+						new WriteUserItemPermission(null, user),
+						new DeleteUserItemPermission(null, user));					
+				}
+				return Arrays.asList(
+					new WriteUserItemPermission(null, user));				
 			}
 		};
 	}

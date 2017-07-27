@@ -81,8 +81,7 @@ public class RegisterCRUD {
 			System.out.println("[Error] Internal server error");
 			System.out.println(ex);
 			return Response.status(Status.INTERNAL_SERVER_ERROR).build();
-		}		
-		
+		}				
 		System.out.println("[Info] User " + user.getUsername() + " has been created");
 		return Response.ok(user).build();
 	}
