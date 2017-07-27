@@ -9,7 +9,7 @@ Yunus Öztürk
 Milosz Sobieraj
 Irina Solovyeva
 
-* Aktuelle .war-Datei ist unter diesem Link zu finden -> http://www85.zippyshare.com/v/DcTBdof9/file.html
+* Aktuelle .war-Datei ist unter diesem Link zu finden -> http://www101.zippyshare.com/v/5JqMetLK/file.html
 * Ergebnisse zu ALEX sind unter diesem Link zu finden -> 
 +	BILD: http://svgur.com/i/2Jm.svg 
 +	SYMBOLS: https://raw.githubusercontent.com/nansquill/BlackBoxJPA/master/Result.alex.symbols.json
